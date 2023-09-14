@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peace_worc/screen/changePassword/change_password.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/home/home.dart';
 import 'package:peace_worc/screen/jobs/jobs.dart';
@@ -6,6 +7,7 @@ import 'package:peace_worc/screen/location/location_assist.dart';
 import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/otp/otp.dart';
 import 'package:peace_worc/screen/profile/profile_registration.dart';
+import 'package:peace_worc/screen/settings/document_upload.dart';
 import 'package:peace_worc/screen/settings/settingScreen.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
 import 'package:peace_worc/screen/jobs/job_detail.dart';
@@ -81,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return const Scaffold(
 
-      body: ProfileRegistrationScreen(),
+      body: DocumentUpload(),
 
       // This trailing comma makes auto-formatting nicer for build methods.
     );

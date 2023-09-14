@@ -20,7 +20,7 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
      Step(
       state: _currentStep <= 0 ? StepState?.indexed : StepState.complete,
       isActive: _currentStep >= 0,
-      title: Text(''), label: Text("Basic"), content: BasicInfoScreen(),),
+      title: Text(''), label: Text("Basic"), content: Center(child: Text("basic"),),),
      Step(
          state: _currentStep <= 1 ? StepState?.indexed : StepState.complete,
          isActive: _currentStep >= 1,
@@ -38,11 +38,20 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
         centerTitle: true,
         title: Text("Profile Registration", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
       ),
-      body:Stepper(
-        controlsBuilder: (BuildContext context, ControlsDetails controls) {
-          return Container(
-            margin: const EdgeInsets.only(top:50.0),
-            child: Row(
+      body:Padding(padding: EdgeInsets.all(5.0),
+        child: Stack(
+          children: [
+            Stepper(
+              controlsBuilder: (BuildContext context, ControlsDetails details) {
+                return SizedBox();
+              },
+              onStepContinue: continueStep,
+              type: StepperType.horizontal,
+              steps: stepList(),
+            ),
+            Positioned(
+              right: 0, left: 0, bottom: 5.0,
+              child: Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
@@ -53,17 +62,15 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
                             borderRadius: BorderRadius.circular(5.0)
                         )
                     ),
-                    onPressed: controls.onStepContinue,
+                    onPressed: continueStep,
                     child: const Text('Next Step', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
                   ),
                 )
               ],
-            ),
-          );
-        },
-        type: StepperType.horizontal,
-        onStepContinue: continueStep,
-        steps: stepList(),
+            ),)
+          ],
+        ),
+
       ),
     );
   }
