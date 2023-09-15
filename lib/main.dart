@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return const Scaffold(
 
-      body: FlagScreen(),
+      body: DashboardScreen(),
 
       // This trailing comma makes auto-formatting nicer for build methods.
     );
