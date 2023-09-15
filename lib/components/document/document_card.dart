@@ -1,16 +1,28 @@
-import 'package:flutter/material.dart';
-class DocumentCard extends StatelessWidget {
-  final String documentName;
-  final Function()? onTap;
-  const DocumentCard({super.key, required this.documentName,  this.onTap});
 
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+import 'package:permission_handler/permission_handler.dart';
+class DocumentCard extends StatefulWidget {
+   final String documentName;
+  const DocumentCard({super.key, required this.documentName});
+
+  @override
+  State<DocumentCard> createState() => _DocumentCardState();
+}
+
+class _DocumentCardState extends State<DocumentCard> {
+
+  File? _image;
+  final _picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(5.0)
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(5.0)
       ),
       child: Column(
         children: [
@@ -19,7 +31,7 @@ class DocumentCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(documentName, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),)
+                Text( widget.documentName, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),)
               ],
             ),
           ),
@@ -28,24 +40,31 @@ class DocumentCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Container(
-                //   margin: EdgeInsets.only(right: 20),
-                //   height: 100,
-                //     width: 100,
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(5.0)
-                //   ),
-                // ),
+                Container(
+                  child:  _image != null ? Container(
+                    margin: EdgeInsets.only(right: 20),
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5.0)
+                    ),
+                    child: Image.file(File(_image!.path), fit: BoxFit.cover,),
+                  ): null,
+                ),
+
 
                 GestureDetector(
-                  onTap: onTap,
+                  onTap: (){
+                    requestPermission();
+
+                  },
                   child: Container(
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5)
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5)
                     ),
                     child: Center(child: Icon(Icons.cloud_upload_rounded, size: 40,)),
                   ),
@@ -57,4 +76,44 @@ class DocumentCard extends StatelessWidget {
       ),
     );
   }
+// This is the image picker
+
+  // Implementing the image picker
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+    await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  void openSettings(){
+    openAppSettings();
+  }
+  Future<void> requestPermission() async{
+    Map<Permission, PermissionStatus> status = await [
+      Permission.storage,
+      Permission.location
+    ].request();
+    if (status[Permission.storage]!.isDenied) {
+      // Camera permission is denied
+      print("storage permission denied");
+    }
+    if(status[Permission.storage]!.isPermanentlyDenied){
+      print("Permanently Denied");
+      openSettings();
+
+    }
+    if (status[Permission.location]!.isDenied) {
+      // Microphone permission is denied
+      print("Location permission denied");
+    }
+    if(status[Permission.storage]!.isGranted){
+      print("permission granted");
+      _openImagePicker();
+    }
+  }
+
 }
