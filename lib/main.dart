@@ -8,6 +8,7 @@ import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/otp/otp.dart';
 import 'package:peace_worc/screen/profile/profile_registration.dart';
 import 'package:peace_worc/screen/settings/document_upload.dart';
+import 'package:peace_worc/screen/settings/flag_screen.dart';
 import 'package:peace_worc/screen/settings/settingScreen.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
 import 'package:peace_worc/screen/jobs/job_detail.dart';
@@ -83,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return const Scaffold(
 
-      body: DocumentUpload(),
+      body: FlagScreen(),
 
       // This trailing comma makes auto-formatting nicer for build methods.
     );
