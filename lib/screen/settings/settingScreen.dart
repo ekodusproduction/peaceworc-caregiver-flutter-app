@@ -15,7 +15,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
+          elevation: 0.0,
           backgroundColor: Colors.white,
           centerTitle: true,
           title: const Text(Settings.settings, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),

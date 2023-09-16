@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_scrollController.offset >= 320) {
       setState(() {
         appBarColor = Colors.white ;
-        appBarElevatation = 5.0;
+        appBarElevatation = 15.0;
          message = "reach the bottom";
          print(message);
       });

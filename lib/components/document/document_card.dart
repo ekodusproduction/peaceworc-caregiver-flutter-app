@@ -95,6 +95,7 @@ class _DocumentCardState extends State<DocumentCard> {
   Future<void> requestPermission() async{
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
+      Permission.photos,
       Permission.location
     ].request();
     if (statuses[Permission.storage]!.isDenied) {
@@ -109,14 +110,32 @@ class _DocumentCardState extends State<DocumentCard> {
     if (statuses[Permission.location]!.isDenied) {
       // Microphone permission is denied
       print("Location permission denied");
-      openSettings();
-    }
 
-    if(statuses[Permission.storage]!.isGranted){
-      print("permission granted ${statuses[Permission.storage]!.isGranted}");
-      _openImagePicker();
-     // openSettings();
     }
+    if(statuses[Permission.photos]!.isDenied){
+      print("Permission Denied for photos ${statuses[Permission.photos]!.isGranted}");
+      openSettings();
+
+    }
+    if(statuses[Permission.photos]!.isPermanentlyDenied){
+      print("Permanently Denied photos");
+      openSettings();
+
+    }
+if(Platform.isAndroid){
+  if(statuses[Permission.storage]!.isGranted){
+    print("permission grantedssss ${statuses[Permission.storage]!.isGranted}");
+    _openImagePicker();
+    // openSettings();
+  }
+}else{
+  if(statuses[Permission.photos]!.isGranted){
+    print("permission granted for photos ${statuses[Permission.photos]!.isGranted}");
+    _openImagePicker();
+    // openSettings();
+  }
+}
+
   }
 
 }
