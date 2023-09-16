@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peace_worc/components/setting_component.dart';
 import 'package:peace_worc/constants/settings/setting_constant.dart';
 import 'package:peace_worc/screen/changePassword/change_password.dart';
+import 'package:peace_worc/screen/settings/document_upload.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -25,7 +26,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
             }, ),
 
-            SettingComponent(settingName: Settings.documentManagement, iconName: Icons.audio_file_outlined),
+            SettingComponent(settingName: Settings.documentManagement, iconName: Icons.audio_file_outlined, onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DocumentUpload()));
+            },),
             SettingComponent(settingName: Settings.earnings, iconName: Icons.account_balance_wallet_outlined),
             SettingComponent(settingName:Settings.strikes, iconName: Icons.block),
             SettingComponent(settingName: Settings.flags, iconName: Icons.flag_circle_outlined),

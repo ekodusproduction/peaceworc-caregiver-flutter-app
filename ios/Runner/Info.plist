@@ -4,6 +4,10 @@
 <dict>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>The app needs location permission</string>
+     <key>NSPhotoLibraryUsageDescription</key>
+     <string>We need to access to your photo library for testing</string>
+     <key>NSDocumentsFolderUsageDescription</key>
+     <string>We need access to your documents folder for testing</string>
     <key>io.flutter.embedded_views_preview</key>
     <true/>
 	<key>CFBundleDevelopmentRegion</key>
