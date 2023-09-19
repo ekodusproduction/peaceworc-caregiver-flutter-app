@@ -1,29 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:peace_worc/components/card/flag_card.dart';
-
-class FlagScreen extends StatefulWidget {
-  const FlagScreen({super.key});
+import 'package:peace_worc/components/card/strike_card.dart';
+class StrikeScreen extends StatefulWidget {
+  const StrikeScreen({super.key});
 
   @override
-  State<FlagScreen> createState() => _FalgScreenState();
+  State<StrikeScreen> createState() => _StrikeScreenState();
 }
 
-class _FalgScreenState extends State<FlagScreen> {
-  final ScrollController _scrollController = ScrollController();
-  double _scrollPosition = 0;
-  @override
-  void initState() {
-    _scrollController.addListener(_scrollListener);
-    super.initState();
-  }
-
-  _scrollListener() {
-    setState(() {
-      _scrollPosition = _scrollController.position.pixels;
-      print(_scrollPosition);
-    });
-  }
-
+class _StrikeScreenState extends State<StrikeScreen> {
   List<String> documentName = [
     "Tuberculosis Test Result",
     "Covid- 19 Vaccination Card",
@@ -47,9 +31,9 @@ class _FalgScreenState extends State<FlagScreen> {
                 color: Colors.black,
               ),
               Text(
-                "Flags",
+                "Strikes",
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
               Icon(
                 Icons.question_mark_outlined,
@@ -65,7 +49,7 @@ class _FalgScreenState extends State<FlagScreen> {
       body: ListView.builder(
           itemCount: documentName.length,
           itemBuilder: (BuildContext context, int index) {
-            return FlagCard();
+            return StrikeCard();
           }),
     );
   }

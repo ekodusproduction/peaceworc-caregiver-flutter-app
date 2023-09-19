@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 class ChangePasswordScreen extends StatefulWidget {
 
   ChangePasswordScreen({super.key});
@@ -16,7 +17,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: BackButton(color: Colors.black,),
+        elevation: 0.0,
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text("Change Password", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),),
@@ -47,7 +51,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                focusedBorder: const OutlineInputBorder(
                  borderSide: BorderSide(color: Colors.black),
                ),
-               labelText: " Current Password *",
+               labelText: " Old Password *",
                labelStyle: const TextStyle(color: Colors.black),
                floatingLabelBehavior: FloatingLabelBehavior.auto,
 
@@ -197,7 +201,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
            child: Align(
              alignment: Alignment.bottomCenter,
              child: Padding(
-               padding: EdgeInsets.only(right:10.0, left:10.0, bottom: 10.0),
+               padding: EdgeInsets.only(right:10.0, left:10.0, bottom: Platform.isIOS ? 20.0 : 10.0),
                child: ElevatedButton(
                  style: ElevatedButton.styleFrom(
                    backgroundColor: Color.fromRGBO(0, 60, 129, 1),

@@ -22,7 +22,9 @@ class _DocumentUploadState extends State<DocumentUpload> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: BackButton(),
+        leading: BackButton(
+          color: Colors.black,
+        ),
         backgroundColor: Colors.white,
         title: const Text("Document management", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),),
         centerTitle: true,

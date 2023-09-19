@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-class FlagCard extends StatelessWidget {
-  const FlagCard({super.key});
+class StrikeCard extends StatelessWidget {
+  const StrikeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return   Card(
       color: Colors.white,
-       elevation: 5.0,
-       clipBehavior: Clip.antiAliasWithSaveLayer,
-       margin: EdgeInsets.all(10.0),
-       shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(5.0)
-       ),
+      elevation: 5.0,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0)
+      ),
       child: Column(
         children: [
           Container(
@@ -26,26 +26,17 @@ class FlagCard extends StatelessWidget {
                     children: [
                       Padding(
                           padding: EdgeInsets.only(left: 5.0, right: 10.0),
-                          child: Text("1/3", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),)),
+                          child: Text("1/3", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),)),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Flag", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),),
-                          Text("Reason: Due to cancel job", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),)
+                          Text("Strike", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),),
+                          Text("Reason: Due to cancel job", style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),)
                         ],
                       )
                     ],
                   ),
-                  Container(
 
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(5.0)
-                    ),
-                    child: Padding(
-                        padding: EdgeInsets.only(right: 10.0, left: 10.0, top:8.0, bottom: 8.0),
-                        child: Text("Job Details", style: TextStyle(color: Colors.black, fontSize: 13),)),
-                  )
                 ],
               ),
             ),
@@ -84,7 +75,7 @@ class FlagCard extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: Colors.red,
               //borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0))
             ),
             child: Padding(
@@ -96,9 +87,9 @@ class FlagCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Banned from bidding", style: TextStyle(color: Colors.black, fontSize: 10),),
+                        Text("Banned from bidding", style: TextStyle(color: Colors.white, fontSize: 11),),
                         SizedBox(height: 5.0,),
-                        Text("96:00:20", style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),)
+                        Text("96:00:20", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),)
                       ],
                     ),
                   ),
@@ -106,19 +97,20 @@ class FlagCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Banned from bidding", style: TextStyle(color: Colors.black, fontSize: 10),),
+                        Text("Banned from bidding", style: TextStyle(color: Colors.white, fontSize: 11),),
                         SizedBox(height: 5.0,),
-                        Text("96:00:20", style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),)
+                        Text("96:00:20", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),)
                       ],
                     ),
                   ),
+                  VerticalDivider(width: 5, color: Colors.white,),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Banned from bidding", style: TextStyle(color: Colors.black, fontSize: 10),),
+                        Text("Banned from bidding", style: TextStyle(color: Colors.white, fontSize: 11),),
                         SizedBox(height: 5.0,),
-                        Text("96:00:20", style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),)
+                        Text("96:00:20", style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),)
                       ],
                     ),
                   )
