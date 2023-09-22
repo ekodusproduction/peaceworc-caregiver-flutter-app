@@ -11,7 +11,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final list = [const HomeScreen(), const JobsScreen(), const ProfileScreen(), const SettingsScreen() ];
+  final list = [const HomeScreen(), const JobsScreen(),  ProfileScreen(), const SettingsScreen() ];
   int _selectedIndex = 0;
 
   void onTap(int index) {

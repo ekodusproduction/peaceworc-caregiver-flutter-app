@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:peace_worc/components/my_textfield.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peace_worc/screen/login/login.dart';
@@ -65,179 +66,185 @@ class _SignUpPageState extends State<SignUpPage>{
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          backgroundColor: Color.fromRGBO(0, 60, 129, 1),
-          body:Center(
-            child: SingleChildScrollView(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Color.fromRGBO(0, 60, 129, 1),
+          statusBarBrightness: Brightness.light,
+        ),
+        child: Scaffold(
+            backgroundColor: Color.fromRGBO(0, 60, 129, 1),
+            body:Center(
+              child: SingleChildScrollView(
 
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: [
-                    const SizedBox(width: 10,),
-                   Image.asset("lib/assets/log.png",  height: 100.0,
-                     width: 100.0,),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'Welcome to Peaceworc',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const Text(
-                      'Register to join',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-
-                    //username Field
-                    MyTextField(controller: usernameController, hintText: "Company Name *", obscureText: false, onChanged: (text){
-                      print('values $text');
-                    },  ),
-                    const SizedBox(height: 18),
-                    MyTextField(controller: usernameController, hintText: "Full Name *", obscureText: false, onChanged: (text){
-                      print('values $text');
-                    },  ),
-                    const SizedBox(height: 18,),
-                    MyTextField(controller: usernameController, hintText: "Email Address", obscureText: false, onChanged: (text){
-                      print('values $text');
-                    },  ),
-                    const SizedBox(height: 18,),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: TextField(
-                        cursorColor: Colors.white,
-
-                        style: const TextStyle(
-
-                            color: Colors.white
-                        ),
-                        controller: passwordController,
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          labelText: "password",
-                          hintText: _isFocused ? null : "password should be greater than 8 characters",
-                          hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
-                          labelStyle: const TextStyle(color: Colors.white),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                                passwordVisible ? Icons.visibility
-                                    : Icons.visibility_off),
+                    children: [
+                      const SizedBox(width: 10,),
+                     Image.asset("lib/assets/log.png",  height: 100.0,
+                       width: 100.0,),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Welcome to Peaceworc',
+                        style: TextStyle(
                             color: Colors.white,
-                            onPressed: () {
-                              setState(
-                                    () {
-                                  passwordVisible = !passwordVisible;
-                                },
-                              );
-                            },
-                          ),
-
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold
                         ),
-
                       ),
-                    ),
-                    const SizedBox(height: 18,),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: TextField(
-                        cursorColor: Colors.white,
-
-                        style: const TextStyle(
-
-                            color: Colors.white
-                        ),
-                        controller: passwordController,
-                        obscureText: passwordVisible,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          labelText: "Confirm Password *",
-                          hintText: _isFocused ? null : "password should be greater than 8 characters",
-                          hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
-                          labelStyle: const TextStyle(color: Colors.white),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                                confirmPasswodVisible ? Icons.visibility
-                                    : Icons.visibility_off),
+                      const Text(
+                        'Register to join',
+                        style: TextStyle(
                             color: Colors.white,
-                            onPressed: () {
-                              setState(
-                                    () {
-                                      confirmPasswodVisible = !confirmPasswodVisible;
-                                },
-                              );
-                            },
-                          ),
-
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold
                         ),
-
                       ),
-                    ),
-                    const SizedBox(height: 25),
-                    Container(
-                      margin: const EdgeInsets.only(right: 25.0, left: 25.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(50), // NEW
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)
+                      const SizedBox(height: 18),
+
+                      //username Field
+                      MyTextField(controller: usernameController, hintText: "Company Name *", obscureText: false, onChanged: (text){
+                        print('values $text');
+                      },  ),
+                      const SizedBox(height: 18),
+                      MyTextField(controller: usernameController, hintText: "Full Name *", obscureText: false, onChanged: (text){
+                        print('values $text');
+                      },  ),
+                      const SizedBox(height: 18,),
+                      MyTextField(controller: usernameController, hintText: "Email Address", obscureText: false, onChanged: (text){
+                        print('values $text');
+                      },  ),
+                      const SizedBox(height: 18,),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: TextField(
+                          cursorColor: Colors.white,
+
+                          style: const TextStyle(
+
+                              color: Colors.white
+                          ),
+                          controller: passwordController,
+                          obscureText: passwordVisible,
+                          decoration: InputDecoration(
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            labelText: "password",
+                            hintText: _isFocused ? null : "password should be greater than 8 characters",
+                            hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                  passwordVisible ? Icons.visibility
+                                      : Icons.visibility_off),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(
+                                      () {
+                                    passwordVisible = !passwordVisible;
+                                  },
+                                );
+                              },
+                            ),
+
+                          ),
+
+                        ),
+                      ),
+                      const SizedBox(height: 18,),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: TextField(
+                          cursorColor: Colors.white,
+
+                          style: const TextStyle(
+
+                              color: Colors.white
+                          ),
+                          controller: passwordController,
+                          obscureText: passwordVisible,
+                          decoration: InputDecoration(
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            labelText: "Confirm Password *",
+                            hintText: _isFocused ? null : "password should be greater than 8 characters",
+                            hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                  confirmPasswodVisible ? Icons.visibility
+                                      : Icons.visibility_off),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(
+                                      () {
+                                        confirmPasswodVisible = !confirmPasswodVisible;
+                                  },
+                                );
+                              },
+                            ),
+
+                          ),
+
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+                      Container(
+                        margin: const EdgeInsets.only(right: 25.0, left: 25.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            minimumSize: const Size.fromHeight(50), // NEW
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)
+                            ),
+                          ),
+                          onPressed: () {
+                            // final snackBar = SnackBar(
+                            //   content: const Text('Yay! A SnackBar!'),
+                            //   action: SnackBarAction(
+                            //     label: 'Undo',
+                            //     onPressed: () {
+                            //       // Some code to undo the change.
+                            //     },
+                            //   ),
+                            // );
+                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
+                          },
+                          child: const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 18,
+                                color: Colors.black),
                           ),
                         ),
-                        onPressed: () {
-                          // final snackBar = SnackBar(
-                          //   content: const Text('Yay! A SnackBar!'),
-                          //   action: SnackBarAction(
-                          //     label: 'Undo',
-                          //     onPressed: () {
-                          //       // Some code to undo the change.
-                          //     },
-                          //   ),
-                          // );
-                          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      ),
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
+
+                      const SizedBox(height: 20,),
+                      const Text('Already have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
+                      const SizedBox(height: 2,),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                         },
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(fontSize: 18,
-                              color: Colors.black),
-                        ),
-                      ),
-                    ),
+                          child: const Text('Login', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),)),
 
-
-                    const SizedBox(height: 20,),
-                    const Text('Already have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
-                    const SizedBox(height: 2,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                      },
-                        child: const Text('Login', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),)),
-
-                  ]
+                    ]
+                ),
               ),
-            ),
-          )
+            )
+        ),
       ),
     );
   }

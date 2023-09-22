@@ -32,7 +32,7 @@ class JobDetail extends StatelessWidget {
                 backgroundImage: NetworkImage(
                 "https://picsum.photos/250?image=9"),
 
-                  radius: 50,
+                  radius: 20,
 
         ),
                   ],
@@ -46,7 +46,7 @@ class JobDetail extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                        Text("Ekodustech",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
+                        Text("Ekodustechs",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
                   ],
                 ),
               ),

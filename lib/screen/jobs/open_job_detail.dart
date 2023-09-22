@@ -30,7 +30,7 @@ class OpenJobDetailScreen extends StatelessWidget {
                       backgroundImage: NetworkImage(
                           "https://picsum.photos/250?image=9"),
 
-                      radius: 50,
+                      radius: 30,
 
                     ),
                   ],
@@ -40,11 +40,11 @@ class OpenJobDetailScreen extends StatelessWidget {
               )
               ,
               const Padding(
-                padding: EdgeInsets.only(left:20 , bottom: 5.0),
+                padding: EdgeInsets.only( bottom: 5.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Ekodustech",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
+                    Text("Ekodustech", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
                   ],
                 ),
               ),
@@ -53,14 +53,6 @@ class OpenJobDetailScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                       onTap: () => {
-                        // showModalBottomSheet(
-                        //   context: context,
-                        //   isScrollControlled: true,
-                        //   builder: (BuildContext context) {
-                        //     return CompanyProfileBottomSheet() ; // Custom bottom sheet widget
-                        //   },
-                        // )
-
                         showModalBottomSheet<void>(
                           isScrollControlled: true,
                           useSafeArea: true,
@@ -93,7 +85,7 @@ class OpenJobDetailScreen extends StatelessWidget {
 
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.all(15.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -134,13 +126,13 @@ class OpenJobDetailScreen extends StatelessWidget {
                                   padding:EdgeInsets.only(left:10.0),
                                   child: Icon(Icons.access_time_outlined, size: 20,)),
                               Padding(
-                                  padding: EdgeInsets.only(left: 20.0),
+                                  padding: EdgeInsets.only(left: 10.0),
                                   child: Text("7:30 PM - 9:30", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),))
                             ],
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top:5.0, left: 5.0, right: 5.0, bottom: 10.0),
+                          padding: EdgeInsets.only( left: 5.0, right: 5.0, bottom: 10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -148,7 +140,7 @@ class OpenJobDetailScreen extends StatelessWidget {
                                   padding : EdgeInsets.only(left: 10),
                                   child: Icon(Icons.calendar_today, size: 20,)),
                               Padding(
-                                  padding: EdgeInsets.only(left: 20.0, ),
+                                  padding: EdgeInsets.only(left: 10.0, ),
                                   child: Text("2023-08-30 to 2023-08-30", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),))
                             ],
                           ),
@@ -159,7 +151,7 @@ class OpenJobDetailScreen extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(right: 10, left: 10.0, bottom: 5.0),
                 child: Container(
                     decoration: BoxDecoration(
                         color: Colors.grey[300],
@@ -194,14 +186,14 @@ class OpenJobDetailScreen extends StatelessWidget {
               ),
 
               Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.only(right: 10.0, left: 10.0, bottom: 10.0, top:5.0),
                 child: Container(
                   decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(5.0)
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.all(15.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -225,7 +217,7 @@ class OpenJobDetailScreen extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 5,),
 
               Padding(
                 padding: EdgeInsets.only(right: 50.0, left:50.0),
@@ -274,7 +266,67 @@ class OpenJobDetailScreen extends StatelessWidget {
 
                   ],
                 ),
-              )
+              ),
+
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(right:20.0, left:20.0, bottom:10.0),
+                    child: Row(
+                      children: [
+
+                        Expanded(
+                          child: Material(
+                            color: Colors.orangeAccent,
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
+                            child: InkWell(
+                              onTap: () {
+                                //print('called on tap');
+                              },
+                              child: const SizedBox(
+                                height: kToolbarHeight,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    '00:00:00',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Material(
+                            color:Colors.grey[100],
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
+                            child: InkWell(
+                              onTap: () {
+                                //print('called on tap');
+                              },
+                              child: const SizedBox(
+                                height: kToolbarHeight,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'BID NOW',
+                                    style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

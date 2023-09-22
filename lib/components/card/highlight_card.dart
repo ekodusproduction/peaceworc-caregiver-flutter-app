@@ -19,7 +19,7 @@ class HighLightCard extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
           border: Border.all(color: Color(0xffeeeeee), width: 2.0),
-            color: Colors.grey[100],
+            color: Colors.grey[200],
             borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             boxShadow: const [
               BoxShadow(

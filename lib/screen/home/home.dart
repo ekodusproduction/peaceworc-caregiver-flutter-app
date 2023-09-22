@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:peace_worc/components/card/job_card_item.dart';
 import 'package:peace_worc/components/card/quick_call.dart';
 import 'package:peace_worc/screen/jobs/open_job_detail.dart';
+import 'package:peace_worc/screen/location/search_job.dart';
+import 'package:peace_worc/screen/location/search_location.dart';
 
 import '../../components/card/highlight_card.dart';
 import '../jobs/job_detail.dart';
@@ -107,15 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverAppBar(
+            title: null,
             elevation: 0,
             expandedHeight: 340.0,
             floating: false,
             pinned: true,
-           collapsedHeight: 70,
+           collapsedHeight: 60,
             backgroundColor: Colors.transparent,
 
             flexibleSpace: FlexibleSpaceBar(
-              title: SizedBox(height: 0.0,),
+              title:null,
               titlePadding: EdgeInsets.zero,
               background: Stack(
                 children: [
@@ -127,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Positioned(
-                      top:130,
+                      top:95,
                       left: 15,
                     right: 15,
                       child: Material(
@@ -137,31 +140,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.grey[200],
+                            color: Colors.white,
 
                           ),
 
 
                     child: Padding(
-                        padding: EdgeInsets.all(13.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.search, size: 30, color: Colors.grey[500],),
-                            Container(
+                            InkWell(
+                                onTap: (){
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) => Dialog.fullscreen(
+                                      insetAnimationCurve: Curves.easeInOut,
+                                      child: SearchJobScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Icon(Icons.search, size: 30, color: Colors.grey[400],)),
+                            InkWell(
+                              onTap: (){
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) => Dialog.fullscreen(
+                                    insetAnimationCurve: Curves.easeInOut,
+                                    child: SearchLocationScreen(),
+                                  ),
+                                );
+                              },
+                              child: Container(
 
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
-                                color: Colors.grey[300],
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Icon(Icons.location_on_outlined, size: 20,),
-                                    Text("Guwahati", style: TextStyle(color: Colors.black, fontSize: 14),)
-                                  ],
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(7.0),
+                                  color: Colors.grey[200],
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.location_on_outlined, size: 18,),
+                                      Text("Guwahati", style: TextStyle(color: Colors.black, fontSize: 12),)
+                                    ],
+                                  ),
                                 ),
                               ),
                             )
@@ -179,9 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 10.0,),
+
             Container(
-              margin: EdgeInsets.only(top:20, left:10, right:10, bottom: 30),
+              margin: EdgeInsets.only(top:15, left:10, right:10, bottom: 30),
               child: const Flex(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,
