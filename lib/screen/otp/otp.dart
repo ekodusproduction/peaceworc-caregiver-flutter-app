@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
 
@@ -9,6 +11,30 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+String defaultPin = "12345";
+late String otp;
+bool isLoaded = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+  _listenOtp;
+  _resetLoader();
+    super.initState();
+  }
+   void _listenOtp() async{
+     await SmsAutoFill().listenForCode();
+     print("OTP Listen is called");
+   }
+
+   void _resetLoader() async{
+     Timer(Duration(seconds: 10), () {
+       print("enters herer");
+       setState(() {
+         isLoaded = false;
+         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+       });
+     });
+   }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,7 +49,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
 
         ),
-        body: SingleChildScrollView(
+        body: isLoaded ? Center(child: CircularProgressIndicator(color: Colors.white,)) : SingleChildScrollView(
           child: Center(
             child: Column(
                 children:[
@@ -37,6 +63,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       Padding(
                         padding: EdgeInsets.only(top:10.0, right: 40.0, left: 40.0, bottom: 10.0),
                         child: PinCodeTextField(
+                          keyboardType: TextInputType.number,
                           appContext: context,
                           length: 6,
                           obscureText: false,
@@ -62,9 +89,12 @@ class _OtpScreenState extends State<OtpScreen> {
                           backgroundColor: Colors.transparent,
                           enableActiveFill: true,
                           // errorAnimationController: errorController,
-                          // controller: textEditingController,
+                           controller: TextEditingController(text: defaultPin),
                           onCompleted: (v) {
-                            print("Completed");
+                            print("Completed${v}");
+                            setState(() {
+                              otp = v;
+                            });
                           },
                           onChanged: (value) {
                             print(value);
@@ -102,7 +132,12 @@ class _OtpScreenState extends State<OtpScreen> {
                             borderRadius: BorderRadius.circular(5.0)
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: ()  {
+
+
+
+
+
                         // final snackBar = SnackBar(
                         //   content: const Text('Yay! A SnackBar!'),
                         //   action: SnackBarAction(
@@ -114,7 +149,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         // );
                         // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
                       },
                       child: const Text(
                         'Verify OTP',
@@ -129,5 +164,10 @@ class _OtpScreenState extends State<OtpScreen> {
         ),
       ),
     );
+  }
+  changeLoaderState(){
+    setState(() {
+      isLoaded = false;
+    });
   }
 }
