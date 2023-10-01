@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:peace_worc/components/my_textfield.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
+// https://medium.com/flutter-community/flutter-login-tutorial-with-flutter-bloc-ea606ef701ad
 class LoginPage extends StatefulWidget {
 
   const LoginPage({super.key});
@@ -67,19 +69,45 @@ class _LoginPageState extends State<LoginPage>{
   }
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    Future.delayed(Duration(milliseconds: 1)).then(
+            (value) => SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              statusBarColor: Colors.red,
+          systemNavigationBarColor: Colors.red,
+          statusBarBrightness: Brightness.dark, // bar light == text dark
+        )));
+
+    return Container(
+      //color: Color.fromRGBO(0, 60, 129, 1),
+      child: SafeArea(
         child: Scaffold(
-            backgroundColor: Colors.black,
-            body:BlocBuilder<InternetBloc, InternetState>(
+            backgroundColor: Color.fromRGBO(0, 60, 129, 1),
+            body:BlocBuilder<LoginBloc, LoginState>(
               builder: (context, state) {
-              if(state is NotConnectedState){
-                  print("no internet state");
-                       return Center(
-                       child: Container(
-                       child: Text("No Internet Kindly check your internet connection", style: TextStyle(color: Colors.white)),
-                        ),
+              if(state is LoginLoadingState){
+
+                       return const Center(
+                       child: CircularProgressIndicator(color: Colors.white,),
                               );
                       }
+              if(state is LoginLoadedSuccessState){
+                if(state.loginModel.httpStatusCode == 401){
+
+
+                _onWidgetDidBuild( (){
+                  final snackBar = SnackBar(
+                    content:  Text(state.loginModel.message.toString()),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        // Some code to undo the change.
+                      },
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                });
+
+                }
+              }
                 return Center(
               child: SingleChildScrollView(
 
@@ -88,7 +116,9 @@ class _LoginPageState extends State<LoginPage>{
 
                     children: [
                       const SizedBox(width: 10,),
-                      SvgPicture.string(svgString, width: 80, height: 80,),
+                      Image.asset("lib/assets/log.png",  height: 100.0,
+                        width: 100.0,),
+
                       const SizedBox(height: 50),
                       const Text(
                         'Welcome Back',
@@ -167,42 +197,38 @@ class _LoginPageState extends State<LoginPage>{
                         ),
                       ),
                       const SizedBox(height: 30),
-                      BlocBuilder<LoginBloc, LoginState>(
-  builder: (context, state) {
-    return Container(
-                        margin: const EdgeInsets.only(right: 25.0, left: 25.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50), // NEW
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)
-                            ),
-                          ),
-                          onPressed: () {
-                            // final snackBar = SnackBar(
-                            //   content: const Text('Yay! A SnackBar!'),
-                            //   action: SnackBarAction(
-                            //     label: 'Undo',
-                            //     onPressed: () {
-                            //       // Some code to undo the change.
-                            //     },
-                            //   ),
-                            // );
-                            // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            BlocProvider.of<LoginBloc>(context).add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
+                Container(
+                  margin: const EdgeInsets.only(right: 25.0, left: 25.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50), // NEW
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)
+                      ),
+                    ),
+                    onPressed: () {
+                      // final snackBar = SnackBar(
+                      //   content: const Text('Yay! A SnackBar!'),
+                      //   action: SnackBarAction(
+                      //     label: 'Undo',
+                      //     onPressed: () {
+                      //       // Some code to undo the change.
+                      //     },
+                      //   ),
+                      // );
+                      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      BlocProvider.of<LoginBloc>(context).add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
 
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
-                          },
-                          child: const Text(
-                            'Log In',
-                            style: TextStyle(fontSize: 18,
-                                color: Colors.black),
-                          ),
-                        ),
-                      );
-  },
-),
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                    },
+                    child: const Text(
+                      'Log In',
+                      style: TextStyle(fontSize: 18,
+                          color: Colors.black),
+                    ),
+                  ),
+                ),
                       const SizedBox(height: 40,),
                       const Text('Do not have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
                       const SizedBox(height: 2,),
@@ -220,7 +246,13 @@ class _LoginPageState extends State<LoginPage>{
   },
 )
         ),
+      ),
     );
+  }
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
   }
 
 }

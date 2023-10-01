@@ -34,9 +34,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
  Future<FutureOr<void>> loginButtonClickEvent(LoginButtonClickedEvent event, Emitter<LoginState> emit) async {
     try{
       emit(LoginLoadingState());
-      print("eamil"+event.email+"password"+event.password);
+      print("email"+event.email+"password"+event.password);
       final loginResponse = await _loginRepo.login( event.email,  event.password, event.fcm_token);
-      print("response"+ loginResponse.toString());
+      print("responsessss"+ loginResponse.httpStatusCode.toString());
+      emit(LoginLoadedSuccessState(loginResponse));
     } catch(e){
       print("expection"+e.toString());
     }

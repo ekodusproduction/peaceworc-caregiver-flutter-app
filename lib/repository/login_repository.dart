@@ -10,8 +10,11 @@ class LoginRepo{
     var params = {'email': email, 'password': password, 'fcm_token': fcm_token};
 
     try {
-      Response response = await _apiClient!.post(ApiLinks.login, data: params);
+      print(ApiLinks.baseUrl+ ApiLinks.login);
+      Response response = await _apiClient!.post(ApiLinks.baseUrl+ ApiLinks.login, data: params);
+      print(response.data);
       _login = Login.fromJson(response.data);
+      print(_login);
     } on DioError catch (e){
       // DioError dioError = e;
        print('THERE IS SOME ERROR IN NETWORK CALL.. ERROR => ${e.error.toString()} and MESSAGE => ${e.message}');
