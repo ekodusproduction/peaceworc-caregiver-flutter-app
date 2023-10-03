@@ -71,8 +71,9 @@ class _LoginPageState extends State<LoginPage>{
   Widget build(BuildContext context) {
     Future.delayed(Duration(milliseconds: 1)).then(
             (value) => SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              statusBarColor: Colors.red,
-          systemNavigationBarColor: Colors.red,
+              statusBarColor: Color.fromRGBO(0, 60, 129, 1),
+          systemNavigationBarColor: Color.fromRGBO(0, 60, 129, 1),
+          systemNavigationBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.dark, // bar light == text dark
         )));
 
@@ -106,6 +107,23 @@ class _LoginPageState extends State<LoginPage>{
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 });
 
+                }
+                else if(state.loginModel.httpStatusCode == 200){
+
+                }
+                else if(state.loginModel.httpStatusCode == 400){
+                  _onWidgetDidBuild( (){
+                    final snackBar = SnackBar(
+                      content:  Text(state.loginModel.message.toString()),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {
+                          // Some code to undo the change.
+                        },
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  });
                 }
               }
                 return Center(

@@ -11,7 +11,7 @@ class LoginRepo{
 
     try {
       print(ApiLinks.baseUrl+ ApiLinks.login);
-      Response response = await _apiClient!.post(ApiLinks.baseUrl+ ApiLinks.login, data: params);
+      Response response = await _apiClient!.post(ApiLinks.login, data: params);
       print(response.data);
       _login = Login.fromJson(response.data);
       print(_login);

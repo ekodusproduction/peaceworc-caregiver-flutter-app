@@ -8,7 +8,10 @@ import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/splash/splash.dart';
 import 'package:peace_worc/services/connectivity_services.dart';
 
-void main() {
+import 'hive/hive_init.dart';
+
+Future<void> main() async {
+  await initFlutterHive();
   runApp(const MyApp());
 }
 
