@@ -55,6 +55,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   http_helper: ^1.2.3
+  flutter_background_service: ^5.0.1
+  flutter_local_notifications: ^15.1.1
 
 dev_dependencies:
   flutter_test:

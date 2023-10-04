@@ -4,6 +4,7 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final Function(String)? onChanged;
+  final String?  Function(String?)? validator;
   final bool isSuffixIconVisible;
   final bool passwordVisible;
   const MyTextField({super.key,
@@ -14,6 +15,7 @@ class MyTextField extends StatelessWidget {
     this.onChanged, // Optional callback
      this.isSuffixIconVisible = false,
     this.passwordVisible = false,
+    this.validator
 
   });
 
@@ -23,7 +25,7 @@ class MyTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
         color: Colors.transparent,
-        child: TextField(
+        child: TextFormField(
             cursorColor: Colors.white,
             style: const TextStyle(
 
@@ -41,9 +43,14 @@ class MyTextField extends StatelessWidget {
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
                 ),
+                errorBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white)
+                ),
+
                 labelText: hintText,
               hintStyle: TextStyle(color: Colors.white),
               labelStyle: const TextStyle(color: Colors.white),
+                errorStyle: const TextStyle(color: Colors.white),
 
                 suffixIcon: isSuffixIconVisible ? IconButton(
                   icon: Icon(
@@ -55,7 +62,8 @@ class MyTextField extends StatelessWidget {
                 ): null,
 
             ),
-
+          validator: validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
       ),
     );

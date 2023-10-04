@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
@@ -7,8 +8,9 @@ import 'package:peace_worc/components/my_textfield.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
+import 'package:peace_worc/utils/login_validator.dart';
 // https://medium.com/flutter-community/flutter-login-tutorial-with-flutter-bloc-ea606ef701ad
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget  {
 
   const LoginPage({super.key});
 
@@ -16,7 +18,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>{
+class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
+  final _formKey = GlobalKey<FormState>();
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -158,8 +161,16 @@ class _LoginPageState extends State<LoginPage>{
 
                       //username Field
                       MyTextField(controller: usernameController, hintText: "Email Address *", obscureText: false, onChanged: (text){
-                        print('values $text');
-                      },  ),
+                        //print('values $text');
+                      },  validator: (String? value){
+
+
+                        print("test ${isEmailValid(value!)}");
+                        if(!isEmailValid(value!)){
+                          return "Invalid Email address";
+                        }
+                        return null;
+                      } ),
                       const SizedBox(height: 30),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -226,17 +237,12 @@ class _LoginPageState extends State<LoginPage>{
                       ),
                     ),
                     onPressed: () {
-                      // final snackBar = SnackBar(
-                      //   content: const Text('Yay! A SnackBar!'),
-                      //   action: SnackBarAction(
-                      //     label: 'Undo',
-                      //     onPressed: () {
-                      //       // Some code to undo the change.
-                      //     },
-                      //   ),
-                      // );
-                      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      BlocProvider.of<LoginBloc>(context).add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
+                      FlutterBackgroundService().invoke('setAsForeground');
+                      if (_formKey.currentState!.validate()) {
+                        BlocProvider.of<LoginBloc>(context).
+                        add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
+                           }
+
 
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
                     },
