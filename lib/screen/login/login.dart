@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
 
                 }
                 else if(state.loginModel.httpStatusCode == 200){
-
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
                 }
                 else if(state.loginModel.httpStatusCode == 400){
                   _onWidgetDidBuild( (){
@@ -132,138 +132,141 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
                 return Center(
               child: SingleChildScrollView(
 
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
 
-                    children: [
-                      const SizedBox(width: 10,),
-                      Image.asset("lib/assets/log.png",  height: 100.0,
-                        width: 100.0,),
+                      children: [
+                        const SizedBox(width: 10,),
+                        Image.asset("lib/assets/log.png",  height: 100.0,
+                          width: 100.0,),
 
-                      const SizedBox(height: 50),
-                      const Text(
-                        'Welcome Back',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      const Text(
-                        'Login to continue',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      //username Field
-                      MyTextField(controller: usernameController, hintText: "Email Address *", obscureText: false, onChanged: (text){
-                        //print('values $text');
-                      },  validator: (String? value){
-
-
-                        print("test ${isEmailValid(value!)}");
-                        if(!isEmailValid(value!)){
-                          return "Invalid Email address";
-                        }
-                        return null;
-                      } ),
-                      const SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-
-                          style: const TextStyle(
-
-                              color: Colors.white
-                          ),
-                          controller: passwordController,
-                          obscureText: passwordVisible,
-                          decoration: InputDecoration(
-                            enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                            labelText: "Password *",
-                            hintText: _isFocused ? null : "password should be greater than 8 characters",
-                            hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
-                            labelStyle: const TextStyle(color: Colors.white),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                  passwordVisible ? Icons.visibility
-                                      : Icons.visibility_off),
+                        const SizedBox(height: 50),
+                        const Text(
+                          'Welcome Back',
+                          style: TextStyle(
                               color: Colors.white,
-                              onPressed: () {
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        const Text(
+                          'Login to continue',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        const SizedBox(height: 30),
 
-                                setState(
-                                      () {
-                                    passwordVisible = !passwordVisible;
-                                  },
-                                );
-                              },
+                        //username Field
+                        MyTextField(controller: usernameController, hintText: "Email Address *", obscureText: false, onChanged: (text){
+                          //print('values $text');
+                        },  validator: (String? value){
+
+
+                          print("test ${isEmailValid(value!)}");
+                          if(!isEmailValid(value!)){
+                            return "Invalid Email address";
+                          }
+                          return null;
+                        } ),
+                        const SizedBox(height: 30),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: TextField(
+                            cursorColor: Colors.white,
+
+                            style: const TextStyle(
+
+                                color: Colors.white
+                            ),
+                            controller: passwordController,
+                            obscureText: passwordVisible,
+                            decoration: InputDecoration(
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              labelText: "Password *",
+                              hintText: _isFocused ? null : "password should be greater than 8 characters",
+                              hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
+                              labelStyle: const TextStyle(color: Colors.white),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                    passwordVisible ? Icons.visibility
+                                        : Icons.visibility_off),
+                                color: Colors.white,
+                                onPressed: () {
+
+                                  setState(
+                                        () {
+                                      passwordVisible = !passwordVisible;
+                                    },
+                                  );
+                                },
+                              ),
+
                             ),
 
                           ),
-
+                        ),
+                        const SizedBox(height: 10),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children:[
+                                Text('Forgot Password ?',
+                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                              ]
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                  Container(
+                    margin: const EdgeInsets.only(right: 25.0, left: 25.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(50), // NEW
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:[
-                              Text('Forgot Password ?',
-                                style: TextStyle(color: Colors.white, fontSize: 16),
-                              ),
-                            ]
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                Container(
-                  margin: const EdgeInsets.only(right: 25.0, left: 25.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(50), // NEW
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)
-                      ),
-                    ),
-                    onPressed: () {
-                      FlutterBackgroundService().invoke('setAsForeground');
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<LoginBloc>(context).
-                        add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
-                           }
+                      onPressed: () {
+                       // FlutterBackgroundService().invoke('setAsForeground');
+                        if (_formKey!.currentState!.validate()) {
+                          BlocProvider.of<LoginBloc>(context).
+                          add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
+                             }
 
 
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
-                    },
-                    child: const Text(
-                      'Log In',
-                      style: TextStyle(fontSize: 18,
-                          color: Colors.black),
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                      },
+                      child: const Text(
+                        'Log In',
+                        style: TextStyle(fontSize: 18,
+                            color: Colors.black),
+                      ),
                     ),
                   ),
-                ),
-                      const SizedBox(height: 40,),
-                      const Text('Do not have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
-                      const SizedBox(height: 2,),
-                      GestureDetector(
-                          onTap: (){
-                            context.read<LoginBloc>().add(LoginRegisterNavigateEvent());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
-                          },
-                          child: const Text('Register now', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),))
+                        const SizedBox(height: 40,),
+                        const Text('Do not have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
+                        const SizedBox(height: 2,),
+                        GestureDetector(
+                            onTap: (){
+                              context.read<LoginBloc>().add(LoginRegisterNavigateEvent());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                            },
+                            child: const Text('Register now', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),))
 
-                    ]
+                      ]
+                  ),
                 ),
               ),
             );

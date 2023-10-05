@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
+import 'package:peace_worc/bloc/profile/add_certificate_bloc.dart';
 import 'package:peace_worc/repository/login_repository.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/login/login.dart';
@@ -13,13 +14,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'hive/hive_init.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Permission.notification.isGranted.then((value) {
-    if(value){
-      Permission.notification.request();
-    }
-  });
-  await initializeService();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Permission.notification.isGranted.then((value) {
+  //   if(value){
+  //     Permission.notification.request();
+  //   }
+  // });
+  // await initializeService();
   await initFlutterHive();
 
   runApp(const MyApp());
@@ -42,7 +43,11 @@ class MyApp extends StatelessWidget {
           create: (context) => LoginRepo(),
           child: MultiBlocProvider(
             providers: [
+              BlocProvider<AddCertificateBloc>(
+                create: (context) => AddCertificateBloc(),
+              ),
               BlocProvider(
+
                   create: (context) =>
                       LoginBloc(
 
@@ -50,7 +55,8 @@ class MyApp extends StatelessWidget {
               
 
               ),
-              BlocProvider(create: (context)=> InternetBloc())
+             // BlocProvider(create: (context)=> InternetBloc()),
+
              
             ], child: LoginPage(),
            

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:peace_worc/model/login.dart';
+import 'package:peace_worc/model/login/login.dart';
 
 import '../../repository/login_repository.dart';
 

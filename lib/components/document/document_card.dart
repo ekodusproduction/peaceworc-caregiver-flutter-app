@@ -81,7 +81,7 @@ class _DocumentCardState extends State<DocumentCard> {
   // Implementing the image picker
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
-    await _picker.pickImage(source: ImageSource.gallery);
+    await _picker.pickImage(source: ImageSource.gallery,);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);

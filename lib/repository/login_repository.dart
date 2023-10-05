@@ -1,6 +1,6 @@
 import 'package:peace_worc/api/api_client.dart';
 import 'package:peace_worc/api/api_links.dart';
-import 'package:peace_worc/model/login.dart';
+import 'package:peace_worc/model/login/login.dart';
 import 'package:dio/dio.dart';
 
 class LoginRepo{
