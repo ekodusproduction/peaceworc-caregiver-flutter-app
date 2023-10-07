@@ -32,37 +32,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Peaceworc Caregiver',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-          useMaterial3: true,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: RepositoryProvider(
-          create: (context) => LoginRepo(),
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider<AddCertificateBloc>(
-                create: (context) => AddCertificateBloc(),
-              ),
-              BlocProvider(
+    return MultiBlocProvider(
+          providers: [
+            BlocProvider<AddCertificateBloc>(
+              create: (context) => AddCertificateBloc(),
+            ),
+            BlocProvider(
 
-                  create: (context) =>
-                      LoginBloc(
+                create: (context) =>
+                    LoginBloc(
 
-                      ),
-              
+                    ),
 
-              ),
-             // BlocProvider(create: (context)=> InternetBloc()),
 
-             
-            ], child: LoginPage(),
-           
-          ),
-        )
-    );
+            ),
+           // BlocProvider(create: (context)=> InternetBloc()),
+
+
+          ], child: const MaterialApp(home: LoginPage(), title: 'Peaceworc Caregiver',
+      debugShowCheckedModeBanner: false,),
+
+        );
+
   }
 }
 

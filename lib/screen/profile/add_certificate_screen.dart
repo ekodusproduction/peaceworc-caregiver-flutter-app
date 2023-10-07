@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/bloc/profile/add_certificate_bloc.dart';
 import 'package:peace_worc/model/profile/add_certificate_model.dart';
 import 'package:peace_worc/utils/permission_handle.dart';
@@ -20,7 +21,7 @@ class _AddCertificateScreenState extends State<AddCertificateScreen>
 
   @override
   Widget build(BuildContext context) {
-    final File? image = getImage();
+     XFile? image = getImage();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -205,17 +206,28 @@ class _AddCertificateScreenState extends State<AddCertificateScreen>
                       )
 
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Text("Add Certificate Image",
-                          style: TextStyle(color: Colors.black),),
-                      ),
-                      Icon(Icons.add_circle_outline, color: Colors.black,
-                        size: 20,)
-                    ],
+                  child: GestureDetector(
+                    onTap: (){
+                      requestPermission();
+                    },
+                    child:
+
+
+
+
+          image != null ? Image.file(File(image!.path), fit: BoxFit.cover, height: 100, width: 100,):
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: Text("Add Certificate Image",
+                            style: TextStyle(color: Colors.black),),
+                        ),
+                        Icon(Icons.add_circle_outline, color: Colors.black,
+                          size: 20,)
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -246,8 +258,7 @@ class _AddCertificateScreenState extends State<AddCertificateScreen>
                         // );
                         // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-                        // BlocProvider.of<AddCertificateBloc>(context).
-                        // add(AddCertificateButtonClickEvent(AddCertificateDataModel(certificateOrCourse: certificateCourse.text, document: "", startYear: startYear.text, endYear: endYear.text) ));
+                        BlocProvider.of<AddCertificateBloc>(context).add(AddCertificateButtonClickEvent(certificateOrCourse: certificateCourse.text, documnent: image, startYear: startYear.text, endYear: endYear.text));
                       },
                       child: const Text(
                         'Add Certificate',

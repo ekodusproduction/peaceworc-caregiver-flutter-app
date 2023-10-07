@@ -3,7 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 mixin PermissionHandler<T, W extends StatefulWidget> on State<W>{
-  File? _image;
+   XFile? _image;
   final _picker = ImagePicker();
   Future<void> requestPermission() async{
     Map<Permission, PermissionStatus> statuses = await [
@@ -61,14 +61,15 @@ mixin PermissionHandler<T, W extends StatefulWidget> on State<W>{
     if (pickedImage != null) {
 
       setState(() {
-        _image = File(pickedImage.path);
+        _image = XFile(pickedImage.path);
       });
 
     }
 
   }
-  File? getImage() {
+  XFile? getImage() {
     return _image;
+
   }
 
 }

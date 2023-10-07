@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/model/profile/add_certificate_model.dart';
 import 'package:peace_worc/model/profile/add_certificate_response.dart';
 
@@ -6,13 +8,28 @@ import '../api/api_client.dart';
 import '../api/api_links.dart';
 
 class ProfileRepo{
-  Future<AddCertificateResponse> uploadCertificate(AddCertificateDataModel addCertificateDataModel) async {
+  Future<AddCertificateResponse> uploadCertificate(String certificateOrCourse,XFile? documnet, String startYear, String endYear ) async {
     AddCertificateResponse addCertificateResponse;
     final _apiClient = ApiClient.http();
     try {
-      print(ApiLinks.baseUrl+ ApiLinks.login);
-      Response response = await _apiClient!.post(ApiLinks.certificateUploadUrl, data: addCertificateDataModel);
-      print(response.data);
+      print(ApiLinks.certificateUploadUrl);
+      print("token${getToken()}");
+      FormData  formData = FormData.fromMap({
+        'certificateOrCourse': certificateOrCourse,
+        'document': await MultipartFile.fromFile(documnet!.path, filename: 'image.jpeg' ),
+        'startYear' :startYear,
+        'endYear': endYear
+
+
+      });
+      Response response = await _apiClient!.post(ApiLinks.certificateUploadUrl, data: formData,   options: Options(
+        headers: <String, dynamic>{
+          'content-type': 'multipart/form-data',
+          'token': getToken(),
+          "Accept":"application/json"
+        },
+      ),);
+      print("Response ${response}");
       addCertificateResponse = AddCertificateResponse.fromJson(response.data);
       print(addCertificateResponse);
     } on DioError catch (e){
