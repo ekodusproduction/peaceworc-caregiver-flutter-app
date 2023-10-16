@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:peace_worc/model/login/login.dart';
 
-import '../../repository/login_repository.dart';
+import '../../repository/login/login_repository.dart';
 
 
 part  'login_event.dart';
@@ -17,6 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
 
     on<LoginRegisterNavigateEvent>(loginRegisterNavigateEvent);
     on<LoginButtonClickedEvent>(loginButtonClickEvent);
+    on<LoginSuccessfulEvent>(loginSuccessfulEvent);
 
   }
 
@@ -41,6 +42,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     } catch(e){
       print("expection"+e.toString());
     }
+  }
+
+  FutureOr<void> loginSuccessfulEvent(LoginSuccessfulEvent event, Emitter<LoginState> emit) {
+
   }
 }
 

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:peace_worc/bloc/otp/otp_bloc.dart';
+import 'package:peace_worc/components/toast/customtoast.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -11,14 +14,14 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  String? data;
 String defaultPin = "12345";
 late String otp;
-bool isLoaded = true;
   @override
   void initState() {
     // TODO: implement initState
   _listenOtp;
-  _resetLoader();
+  //_resetLoader();
     super.initState();
   }
    void _listenOtp() async{
@@ -26,17 +29,19 @@ bool isLoaded = true;
      print("OTP Listen is called");
    }
 
-   void _resetLoader() async{
-     Timer(Duration(seconds: 10), () {
-       print("enters herer");
-       setState(() {
-         isLoaded = false;
-         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
-       });
-     });
-   }
+   // void _resetLoader() async{
+   //   Timer(Duration(seconds: 10), () {
+   //     print("enters herer");
+   //     setState(() {
+   //       isLoaded = false;
+   //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+   //     });
+   //   });
+   // }
   @override
   Widget build(BuildContext context) {
+    data = ModalRoute.of(context)?.settings.arguments as String?;
+    print(data);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(0, 60, 129, 1),
@@ -49,7 +54,26 @@ bool isLoaded = true;
 
 
         ),
-        body: isLoaded ? Center(child: CircularProgressIndicator(color: Colors.white,)) : SingleChildScrollView(
+        body:  BlocBuilder<OtpBloc, OtpState>(
+  builder: (context, state) {
+    if(state is OtpLoadingState){
+      return Center(child: CircularProgressIndicator(color: Colors.white,));
+    }
+    if(state is OtpVerifiedSuccessState){
+      _onWidgetDidBuild(() {
+
+        print("pass");
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashboardScreen()));
+      });
+    }
+    if(state is OtpVerifiedFailureState){
+        Toast(message: state.message.toString()).show(context);
+    }
+    return SingleChildScrollView(
           child: Center(
             child: Column(
                 children:[
@@ -134,22 +158,12 @@ bool isLoaded = true;
                       ),
                       onPressed: ()  {
 
+                        BlocProvider.of<OtpBloc>(context).add(
+                            OtpButtonClickEvent(
+                              email: data!,
+                              otp: otp!
+                                ));
 
-
-
-
-                        // final snackBar = SnackBar(
-                        //   content: const Text('Yay! A SnackBar!'),
-                        //   action: SnackBarAction(
-                        //     label: 'Undo',
-                        //     onPressed: () {
-                        //       // Some code to undo the change.
-                        //     },
-                        //   ),
-                        // );
-                        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-                       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
                       },
                       child: const Text(
                         'Verify OTP',
@@ -161,13 +175,18 @@ bool isLoaded = true;
                 ]
             ),
           ),
-        ),
+        );
+  },
+),
       ),
     );
   }
-  changeLoaderState(){
-    setState(() {
-      isLoaded = false;
+
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
     });
+
   }
 }

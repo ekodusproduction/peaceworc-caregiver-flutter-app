@@ -6,19 +6,23 @@ import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
 import 'package:peace_worc/components/my_textfield.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
+import 'package:peace_worc/screen/settings/settingScreen.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
 import 'package:peace_worc/utils/login_validator.dart';
-// https://medium.com/flutter-community/flutter-login-tutorial-with-flutter-bloc-ea606ef701ad
-class LoginPage extends StatefulWidget  {
 
+import '../../utils/utils.dart';
+
+// https://medium.com/flutter-community/flutter-login-tutorial-with-flutter-bloc-ea606ef701ad
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
+class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass {
   final _formKey = GlobalKey<FormState>();
 
   final usernameController = TextEditingController();
@@ -46,7 +50,7 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
   <path d="M79.5 170.7 120.9 156.4 107.4 142.8" fill="url(#triangleGradient)" />
 </svg>
 ''';
-  late  bool passwordVisible=true;
+  late bool passwordVisible = true;
   late FocusNode myPasswordFocusNode, confirmPasswordFocusNode;
   bool _isFocused = false;
 
@@ -55,8 +59,8 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
     super.initState();
 
     myPasswordFocusNode = FocusNode();
-
   }
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -64,223 +68,252 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
     myPasswordFocusNode.dispose();
     super.dispose();
   }
+
   void _onFocusChange() {
     setState(() {
       _isFocused = myPasswordFocusNode.hasFocus;
-
     });
   }
+
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(milliseconds: 1)).then(
-            (value) => SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        (value) => SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
               statusBarColor: Color.fromRGBO(0, 60, 129, 1),
-          systemNavigationBarColor: Color.fromRGBO(0, 60, 129, 1),
-          systemNavigationBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark, // bar light == text dark
-        )));
+              systemNavigationBarColor: Color.fromRGBO(0, 60, 129, 1),
+              systemNavigationBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark, // bar light == text dark
+            )));
 
     return Container(
       //color: Color.fromRGBO(0, 60, 129, 1),
       child: SafeArea(
         child: Scaffold(
             backgroundColor: Color.fromRGBO(0, 60, 129, 1),
-            body:BlocBuilder<LoginBloc, LoginState>(
+            body: BlocBuilder<LoginBloc, LoginState>(
               builder: (context, state) {
-              if(state is LoginLoadingState){
-
-                       return const Center(
-                       child: CircularProgressIndicator(color: Colors.white,),
-                              );
-                      }
-              if(state is LoginLoadedSuccessState){
-                if(state.loginModel.httpStatusCode == 401){
-
-
-                _onWidgetDidBuild( (){
-                  final snackBar = SnackBar(
-                    content:  Text(state.loginModel.message.toString()),
-                    action: SnackBarAction(
-                      label: 'Undo',
-                      onPressed: () {
-                        // Some code to undo the change.
-                      },
+                if (state is LoginLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                });
-
                 }
-                else if(state.loginModel.httpStatusCode == 200){
-                  print("pass");
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                if (state is LoginLoadedSuccessState) {
+                  if (state.loginModel.httpStatusCode == 401) {
+                    _onWidgetDidBuild(() {
+                      final snackBar = SnackBar(
+                        content: Text(state.loginModel.message.toString()),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            // Some code to undo the change.
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    });
+                  } else if (state.loginModel.httpStatusCode == 200) {
+                    _onWidgetDidBuild(() {
+                      print("pass");
+                      saveToken(state.loginModel.token!);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DashboardScreen()));
+                    });
+                  } else if (state.loginModel.httpStatusCode == 400) {
+                    _onWidgetDidBuild(() {
+                      final snackBar = SnackBar(
+                        content: Text(state.loginModel.message.toString()),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            // Some code to undo the change.
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    });
+                  }
                 }
-                else if(state.loginModel.httpStatusCode == 400){
-                  _onWidgetDidBuild( (){
-                    final snackBar = SnackBar(
-                      content:  Text(state.loginModel.message.toString()),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () {
-                          // Some code to undo the change.
-                        },
-                      ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  });
-                }
-              }
                 return Center(
-              child: SingleChildScrollView(
-
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-
-                      children: [
-                        const SizedBox(width: 10,),
-                        Image.asset("lib/assets/log.png",  height: 100.0,
-                          width: 100.0,),
-
-                        const SizedBox(height: 50),
-                        const Text(
-                          'Welcome Back',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        const Text(
-                          'Login to continue',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-
-                        //username Field
-                        MyTextField(controller: usernameController, hintText: "Email Address *", obscureText: false, onChanged: (text){
-                          //print('values $text');
-                        },  validator: (String? value){
-
-
-                          print("test ${isEmailValid(value!)}");
-                          if(!isEmailValid(value!)){
-                            return "Invalid Email address";
-                          }
-                          return null;
-                        } ),
-                        const SizedBox(height: 30),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                          child: TextField(
-                            cursorColor: Colors.white,
-
-                            style: const TextStyle(
-
-                                color: Colors.white
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 10,
                             ),
-                            controller: passwordController,
-                            obscureText: passwordVisible,
-                            decoration: InputDecoration(
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              labelText: "Password *",
-                              hintText: _isFocused ? null : "password should be greater than 8 characters",
-                              hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
-                              labelStyle: const TextStyle(color: Colors.white),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                    passwordVisible ? Icons.visibility
-                                        : Icons.visibility_off),
-                                color: Colors.white,
-                                onPressed: () {
+                            Image.asset(
+                              "lib/assets/log.png",
+                              height: 100.0,
+                              width: 100.0,
+                            ),
 
-                                  setState(
-                                        () {
-                                      passwordVisible = !passwordVisible;
-                                    },
-                                  );
+                            const SizedBox(height: 50),
+                            const Text(
+                              'Welcome Back',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Text(
+                              'Login to continue',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 30),
+
+                            //username Field
+                            MyTextField(
+                                controller: usernameController,
+                                hintText: "Email Address *",
+                                obscureText: false,
+                                onChanged: (text) {
+                                  //print('values $text');
                                 },
-                              ),
-
-                            ),
-
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children:[
-                                Text('Forgot Password ?',
-                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                validator: (String? value) {
+                                  print("test ${isEmailValid(value!)}");
+                                  if (!isEmailValid(value!)) {
+                                    return "Invalid Email address";
+                                  }
+                                  return null;
+                                }),
+                            const SizedBox(height: 30),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30.0),
+                              child: TextField(
+                                cursorColor: Colors.white,
+                                style: const TextStyle(color: Colors.white),
+                                controller: passwordController,
+                                obscureText: passwordVisible,
+                                decoration: InputDecoration(
+                                  enabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                  ),
+                                  labelText: "Password *",
+                                  hintText: _isFocused
+                                      ? null
+                                      : "password should be greater than 8 characters",
+                                  hintStyle: const TextStyle(
+                                      color: Colors.white, fontSize: 10.0),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      if (mounted) {
+                                        setState(
+                                          () {
+                                            passwordVisible = !passwordVisible;
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ]
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                  Container(
-                    margin: const EdgeInsets.only(right: 25.0, left: 25.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        minimumSize: const Size.fromHeight(50), // NEW
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0)
-                        ),
-                      ),
-                      onPressed: () {
-                       // FlutterBackgroundService().invoke('setAsForeground');
-                        if (_formKey!.currentState!.validate()) {
-                          BlocProvider.of<LoginBloc>(context).
-                          add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
-                             }
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25.0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Forgot Password ?',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                  ]),
+                            ),
+                            const SizedBox(height: 30),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  right: 25.0, left: 25.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  minimumSize: const Size.fromHeight(50), // NEW
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                ),
+                                onPressed: () {
+                                  // FlutterBackgroundService().invoke('setAsForeground');
+                                  if (_formKey!.currentState!.validate()) {
+                                    BlocProvider.of<LoginBloc>(context).add(
+                                        LoginButtonClickedEvent(
+                                            email: usernameController.text,
+                                            password: passwordController.text,
+                                            fcm_token: "teststststststs"));
+                                  }
 
-
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
-                      },
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(fontSize: 18,
-                            color: Colors.black),
-                      ),
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                                },
+                                child: const Text(
+                                  'Log In',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            const Text(
+                              'Do not have an account?',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<LoginBloc>()
+                                      .add(LoginRegisterNavigateEvent());
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SignUpPage()));
+                                },
+                                child: const Text(
+                                  'Register now',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                          ]),
                     ),
                   ),
-                        const SizedBox(height: 40,),
-                        const Text('Do not have an account?', style: TextStyle(color: Colors.white, fontSize: 12.0, ),),
-                        const SizedBox(height: 2,),
-                        GestureDetector(
-                            onTap: (){
-                              context.read<LoginBloc>().add(LoginRegisterNavigateEvent());
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
-                            },
-                            child: const Text('Register now', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),))
-
-                      ]
-                  ),
-                ),
-              ),
-            );
-  },
-)
-        ),
+                );
+              },
+            )),
       ),
     );
   }
+
   void _onWidgetDidBuild(Function callback) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callback();
     });
   }
-
 }

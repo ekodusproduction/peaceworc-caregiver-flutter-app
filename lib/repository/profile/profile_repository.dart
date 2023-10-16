@@ -4,8 +4,8 @@ import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/model/profile/add_certificate_model.dart';
 import 'package:peace_worc/model/profile/add_certificate_response.dart';
 
-import '../api/api_client.dart';
-import '../api/api_links.dart';
+import '../../api/api_client.dart';
+import '../../api/api_links.dart';
 
 class ProfileRepo{
   Future<AddCertificateResponse> uploadCertificate(String certificateOrCourse,XFile? documnet, String startYear, String endYear ) async {

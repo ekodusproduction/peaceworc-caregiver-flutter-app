@@ -8,11 +8,12 @@ Future<void> initFlutterHive() async {
 
 Future<void> saveToken(String token) async {
   await Hive.box("user_data").put("token", token);
-  print(getToken());
+  //print(getToken());
 }
 Future<void> saveRefreshToken(String token) async{
   await Hive.box("user_data").put('refresh_token', token);
 }
+
 String? getToken() {
   return Hive.box("user_data").get("token", defaultValue: null);
 }

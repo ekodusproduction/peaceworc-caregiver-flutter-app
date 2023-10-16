@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
+import 'package:peace_worc/bloc/job/job_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
+import 'package:peace_worc/bloc/otp/otp_bloc.dart';
 import 'package:peace_worc/bloc/profile/add_certificate_bloc.dart';
-import 'package:peace_worc/repository/login_repository.dart';
+import 'package:peace_worc/bloc/signup/signup_bloc.dart';
+import 'package:peace_worc/repository/login/login_repository.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/splash/splash.dart';
@@ -43,11 +46,33 @@ class MyApp extends StatelessWidget {
                     LoginBloc(
 
                     ),
+            ),
+           // BlocProvider(create: (context)=> InternetBloc()),
+            BlocProvider(
+              create: (context) =>
+                  SignupBloc(
+
+                  ),
 
 
             ),
-           // BlocProvider(create: (context)=> InternetBloc()),
+            BlocProvider(
+              create: (context) =>
+                  OtpBloc(
 
+                  ),
+
+
+            ),
+
+            BlocProvider(
+              create: (context) =>
+                  JobBloc(
+
+                  ),
+
+
+            ),
 
           ], child: const MaterialApp(home: LoginPage(), title: 'Peaceworc Caregiver',
       debugShowCheckedModeBanner: false,),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:peace_worc/components/card/qualification.dart';
 import 'package:peace_worc/screen/profile/add_basic_information_screen.dart';
@@ -41,11 +42,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Stack(
                         children:[
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://picsum.photos/250?image=9"),
-                            radius: 50,
-                          ),
+        CachedNetworkImage(
+        imageUrl: "https://picsum.photos/250?image=9",
+        errorWidget: (context, url, error) => Text("error"),
+        imageBuilder: (context, imageProvider) => CircleAvatar(
+          radius: 50,
+          backgroundImage: imageProvider,
+        ),
+      ),
 
 
                           Positioned(
@@ -61,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 color: Colors.greenAccent,
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
-                              child:  Row(
+                              child:  const Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Icon(
@@ -89,8 +93,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Text("subrajitdeg54@gmail.com",
                           style: TextStyle(color: Colors.white,  fontSize: 12),)),
                     const SizedBox(height: 10.0,),
-                    Divider(height: 5.0, color: Colors.white),
-                    IntrinsicHeight(
+                    const Divider(height: 5.0, color: Colors.white),
+                    const IntrinsicHeight(
 
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -221,7 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
+                          const Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -240,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
+                              const Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
