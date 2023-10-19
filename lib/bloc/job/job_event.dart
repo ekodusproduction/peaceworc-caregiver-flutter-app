@@ -3,19 +3,8 @@ part of 'job_bloc.dart';
 @immutable
 abstract class JobEvent extends Equatable {}
 
+// Bided Job Event
 class FetchBiddedJobs extends JobEvent{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-
-}
-class FetchAwardedJobs extends JobEvent{
-  @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
-
-}
-class FetchCompletedJobs extends JobEvent{
   @override
   // TODO: implement props
   List<Object?> get props => [];
@@ -27,21 +16,21 @@ class FetchBiddedJobsSuccessfulEvent extends JobEvent{
   List<Object?> get props => [];
 
 }
-class FetchAwardedJobsSuccessfulEvent extends JobEvent{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-
-}
-class FetchCompletedJobsSuccessfulEvent extends JobEvent{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-
-}
-
-
 class FetchBiddedJobsFailureEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
+// Awarded Job Event
+class FetchAwardedJobs extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+
+}
+class FetchAwardedJobsSuccessfulEvent extends JobEvent{
   @override
   // TODO: implement props
   List<Object?> get props => [];
@@ -53,6 +42,24 @@ class FetchAwardedJobsFailureEvent extends JobEvent{
   List<Object?> get props => [];
 
 }
+
+
+// Completed Job Event
+class FetchCompletedJobs extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
+
+class FetchCompletedJobsSuccessfulEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
 class FetchCompletedJobsFailureEvent extends JobEvent{
   @override
   // TODO: implement props

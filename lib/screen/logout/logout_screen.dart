@@ -8,7 +8,7 @@ class Logout extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       elevation: 0.0,
-      insetPadding: EdgeInsets.symmetric(vertical: 8.0),
+      insetPadding: const EdgeInsets.symmetric(vertical: 8.0),
       title: const Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -27,12 +27,12 @@ class Logout extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('No'),
-          onPressed: onNoTap
+          onPressed: onNoTap,
+          child: const Text('No')
         ),
         TextButton(
-          child: const Text('Yes'),
           onPressed: onYesTap,
+          child: const Text('Yes'),
         ),
       ],
     );

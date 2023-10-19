@@ -1,17 +1,19 @@
-import 'package:peace_worc/api/api_client.dart';
-import 'package:peace_worc/api/api_links.dart';
-import 'package:peace_worc/model/login/login.dart';
 import 'package:dio/dio.dart';
 import 'package:peace_worc/model/response/response.dart';
 
-class LogoutRepo{
-  Future<CommonResponse> logout() async {
-    CommonResponse commonResponse;
-    final _apiClient = ApiClient.http();
-    try {
+import '../../api/api_client.dart';
+import '../../api/api_links.dart';
 
-      Response response = await _apiClient!.post(ApiLinks.logoutUrl);
+class SettingsRepo{
+  Future<CommonResponse> changePassword(String oldPassword, String newPassword, String confirmPassword) async {
+     CommonResponse commonResponse;
+    final _apiClient = ApiClient.http();
+    var params = {'current_password': oldPassword, 'password': newPassword, 'confirm_password': confirmPassword};
+    try {
+      print(ApiLinks.changePasswordUrl);
+      Response response = await _apiClient!.post(ApiLinks.changePasswordUrl, data: params);
       print(response.data);
+
       commonResponse = CommonResponse.fromJson(response.data);
       print(commonResponse);
     } on DioError catch (e){

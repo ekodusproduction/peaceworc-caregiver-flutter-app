@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/job/job_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
+import 'package:peace_worc/bloc/logout/settings_bloc.dart';
 import 'package:peace_worc/bloc/otp/otp_bloc.dart';
 import 'package:peace_worc/bloc/profile/add_certificate_bloc.dart';
+import 'package:peace_worc/bloc/profile/profile_details_bloc.dart';
 import 'package:peace_worc/bloc/signup/signup_bloc.dart';
 import 'package:peace_worc/repository/login/login_repository.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
@@ -71,6 +73,21 @@ class MyApp extends StatelessWidget {
 
                   ),
 
+            ),
+
+            BlocProvider(
+              create: (context) =>
+                  ProfileDetailsBloc(
+
+                  ),
+
+            ),
+
+            BlocProvider(
+              create: (context) =>
+                  SettingsBloc(
+
+                  ),
 
             ),
 

@@ -11,7 +11,13 @@ Future<void> saveToken(String token) async {
   //print(getToken());
 }
 Future<void> saveRefreshToken(String token) async{
+
   await Hive.box("user_data").put('refresh_token', token);
+}
+
+Future<void> deleteToken() async{
+   await Hive.box("user_data").delete("token");
+
 }
 
 String? getToken() {

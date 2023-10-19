@@ -8,4 +8,8 @@ class ApiLinks{
   static const String getJobsUrl = 'job/get-jobs';
   static const String logoutUrl = 'logout';
   static const String fetchBidJobUrl = 'job/get-bidded-jobs';
+  static const String fetchAwardedJobUrl = '/job/ongoing/get';
+  static const String fetchProfileDetailUrl = '/profile/get-details';
+  static const String fetchCompletedJobUrl = '/job/complete-job/get';
+  static const String changePasswordUrl = 'profile/change-password';
 }

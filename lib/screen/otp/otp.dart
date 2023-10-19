@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:peace_worc/bloc/otp/otp_bloc.dart';
-import 'package:peace_worc/components/toast/customtoast.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
 
@@ -71,7 +71,16 @@ late String otp;
       });
     }
     if(state is OtpVerifiedFailureState){
-        Toast(message: state.message.toString()).show(context);
+      Fluttertoast.showToast(
+          msg: state.message.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+
     }
     return SingleChildScrollView(
           child: Center(

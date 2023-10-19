@@ -19,16 +19,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return  Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: BackButton(color: Colors.black,),
+        leading: const BackButton(color: Colors.black,),
         elevation: 0.0,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text("Change Password", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),),
+        title: const Text("Change Password", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),),
       ),
       body: Column(
        children: [
          Padding(
-           padding: EdgeInsets.only(top:20, right: 10,left: 10),
+           padding: const EdgeInsets.only(top:20, right: 10,left: 10),
            child: TextFormField(
              cursorColor: Colors.black,
              maxLength: 12,
@@ -44,7 +44,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                    )
                ),
 
-               enabledBorder: OutlineInputBorder(
+               enabledBorder: const OutlineInputBorder(
                  borderSide: BorderSide(
                      color: Colors.black), //<-- SEE HERE
                ),
@@ -83,7 +83,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
            ),
          ),
          Padding(
-           padding: EdgeInsets.only(top:20, right: 10,left: 10),
+           padding: const EdgeInsets.only(top:20, right: 10,left: 10),
            child: TextFormField(
              cursorColor: Colors.black,
              maxLength: 12,
@@ -99,7 +99,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                  )
                ),
 
-               enabledBorder: OutlineInputBorder(
+               enabledBorder: const OutlineInputBorder(
                  borderSide: BorderSide(
                     color: Colors.black), //<-- SEE HERE
                ),
@@ -140,7 +140,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
            ),
          ),
          Padding(
-           padding: EdgeInsets.only(top:20, right: 10,left: 10),
+           padding: const EdgeInsets.only(top:20, right: 10,left: 10),
            child: TextFormField(
              cursorColor: Colors.black,
              maxLength: 12,
@@ -156,7 +156,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                    )
                ),
 
-               enabledBorder: OutlineInputBorder(
+               enabledBorder: const OutlineInputBorder(
                  borderSide: BorderSide(
                      color: Colors.black), //<-- SEE HERE
                ),
@@ -204,7 +204,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                padding: EdgeInsets.only(right:10.0, left:10.0, bottom: Platform.isIOS ? 20.0 : 10.0),
                child: ElevatedButton(
                  style: ElevatedButton.styleFrom(
-                   backgroundColor: Color.fromRGBO(0, 60, 129, 1),
+                   backgroundColor: const Color.fromRGBO(0, 60, 129, 1),
                    minimumSize: const Size.fromHeight(55), // NEW
                    shape: RoundedRectangleBorder(
                        borderRadius: BorderRadius.circular(5.0)

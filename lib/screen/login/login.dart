@@ -100,42 +100,28 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass {
                   );
                 }
                 if (state is LoginLoadedSuccessState) {
-                  if (state.loginModel.httpStatusCode == 401) {
-                    _onWidgetDidBuild(() {
-                      final snackBar = SnackBar(
-                        content: Text(state.loginModel.message.toString()),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {
-                            // Some code to undo the change.
-                          },
-                        ),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    });
-                  } else if (state.loginModel.httpStatusCode == 200) {
-                    _onWidgetDidBuild(() {
-                      print("pass");
-                      saveToken(state.loginModel.token!);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DashboardScreen()));
-                    });
-                  } else if (state.loginModel.httpStatusCode == 400) {
-                    _onWidgetDidBuild(() {
-                      final snackBar = SnackBar(
-                        content: Text(state.loginModel.message.toString()),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {
-                            // Some code to undo the change.
-                          },
-                        ),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    });
-                  }
+                  _onWidgetDidBuild(() {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardScreen()));
+                  });
+                  return Container();
+                }
+
+                if(state is LoginErrorState){
+                  _onWidgetDidBuild(() {
+                    final snackBar = SnackBar(
+                      content: Text(state.message!),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {
+                          // Some code to undo the change.
+                        },
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  });
                 }
                 return Center(
                   child: SingleChildScrollView(

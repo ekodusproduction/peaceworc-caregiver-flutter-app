@@ -1,10 +1,13 @@
 import 'dart:async';
 
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:peace_worc/model/login/login.dart';
 
+import '../../hive/hive_init.dart';
 import '../../repository/login/login_repository.dart';
 
 
@@ -38,7 +41,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       print("email"+event.email+"password"+event.password);
       final loginResponse = await _loginRepo.login( event.email,  event.password, event.fcm_token);
       print("responsessss"+ loginResponse.httpStatusCode.toString());
-      emit(LoginLoadedSuccessState(loginResponse));
+      if(loginResponse.httpStatusCode == 200){
+        saveToken(loginResponse.token!);
+
+        emit(LoginLoadedSuccessState(loginResponse));
+      }
+      if(loginResponse.httpStatusCode == 400 || loginResponse.httpStatusCode == 401){
+        emit(LoginErrorState(loginResponse.message));
+      }
+
+
     } catch(e){
       print("expection"+e.toString());
     }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:peace_worc/screen/jobs/awardedJobs/awarded_jobs.dart';
+import 'package:peace_worc/screen/jobs/completed/completed_jobs.dart';
 import 'package:peace_worc/screen/jobs/myBids/my_bid_jobs.dart';
 class JobsScreen extends StatefulWidget {
   const JobsScreen({super.key});
@@ -33,7 +35,6 @@ class _JobsScreenState extends State<JobsScreen> {
                   tabs: const <Widget>[
 
                       Tab(
-
                               child: Padding(
                                 padding: EdgeInsets.only(right: 15, left: 15),
                                   child: Text("My Bids", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.normal),)),
@@ -60,12 +61,8 @@ class _JobsScreenState extends State<JobsScreen> {
                 child: TabBarView(
                   children: <Widget>[
                    MyBidJobs(),
-                    Center(
-                      child: Text("Awarded Job Screen"),
-                    ),
-                    Center(
-                      child: Text("Completed Screen"),
-                    ),
+                    AwardedJob(),
+                   CompletedJobs(),
                   ],
                 ),
               )

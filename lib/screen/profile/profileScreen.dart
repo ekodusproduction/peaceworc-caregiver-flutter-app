@@ -1,10 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:peace_worc/bloc/profile/profile_details_bloc.dart';
 import 'package:peace_worc/components/card/qualification.dart';
+import 'package:peace_worc/model/profile/profile_details_model.dart';
 import 'package:peace_worc/screen/profile/add_basic_information_screen.dart';
 import 'package:peace_worc/screen/profile/add_bio_information_screen.dart';
 import 'package:peace_worc/screen/profile/add_certificate_screen.dart';
 import 'package:peace_worc/screen/profile/edit_education_list.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../api/api_links.dart';
 class ProfileScreen extends StatefulWidget {
    const ProfileScreen({super.key});
 
@@ -20,202 +27,240 @@ class _ProfileScreenState extends State<ProfileScreen> {
     "test2",
 
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<ProfileDetailsBloc>(context).add(FetchProfileDetailsEvent());
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  SafeArea(
+      child: BlocBuilder<ProfileDetailsBloc, ProfileDetailsState>(
+  builder: (context, state) {
+   if(state is ProfileDetailsLoadingState){
+     var profileDetailsResponse =  ProfileDetailsResponse(
+       success: false,
+         message: "test",
+         data: null,
+         token: null,
+         httpStatusCode: 200
+     );
+     return profileWidget(true, profileDetailsResponse);
+   }
+   if(state is ProfileDetailsSuccessState){
+     print("succccccccccccccccccc");
+
+     return profileWidget(false, state.profileDetailsResponse);
+   }
+   return Center(
+     child: Lottie.asset(
+       'lib/assets/internal_error.json',
+       width: 200,
+       height: 200,
+       fit: BoxFit.fill,
+     ),
+   );
+  },
+),
+    );
+  }
+  Widget profileWidget(loadingState,ProfileDetailsResponse? profileDetailsResponse){
+    return Skeletonizer(
+      enabled: loadingState,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Flex(
           direction: Axis.vertical,
           children: [
-            Container(
-              color: const Color.fromRGBO(0, 60, 129, 1),
-              child: Center(
-                child: Column(
-                  children: [
-                     Padding(
-                      padding: EdgeInsets.only(top:10.0, bottom: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [ Text("Subrajit Deb", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),)],
+            Skeleton.shade(
+              child: Container(
+                color: const Color.fromRGBO(0, 60, 129, 1),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top:10.0, bottom: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [ Text("Subrajit Deb", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),)],
+                        ),
                       ),
-                    ),
-                    Stack(
-                        children:[
-        CachedNetworkImage(
-        imageUrl: "https://picsum.photos/250?image=9",
-        errorWidget: (context, url, error) => Text("error"),
-        imageBuilder: (context, imageProvider) => CircleAvatar(
-          radius: 50,
-          backgroundImage: imageProvider,
-        ),
-      ),
-
-
-                          Positioned(
-                            bottom: 0,
-                            right: 20,
-                            left: 20,
-
-
-                            child: Container(
-
-                              padding: EdgeInsets.only(top:2,bottom: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.greenAccent,
-                                borderRadius: BorderRadius.circular(12.0),
+                      Stack(
+                          children:[
+                            CachedNetworkImage(
+                              imageUrl:"https://peaceworc-phase2-dev.ekodusproject.tech/${profileDetailsResponse?.data?.basicInfo!.photo}" ??  "https://picsum.photos/250?image=9",
+                              errorWidget: (context, url, error) => Text("error"),
+                              imageBuilder: (context, imageProvider) => Skeleton.shade(
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: imageProvider,
+                                ),
                               ),
-                              child:  const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.white,
-                                    size: 14.0,
-                                  ),
+                            ),
 
+
+                            Positioned(
+                              bottom: 0,
+                              right: 20,
+                              left: 20,
+
+
+                              child: Skeleton.shade(
+                                child: Container(
+
+                                  padding: EdgeInsets.only(top:2,bottom: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.greenAccent,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  child:  const Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Colors.white,
+                                        size: 14.0,
+                                      ),
+
+                                      Text(
+                                        "4.5",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]),
+                      const SizedBox(height: 10,),
+                       Padding(
+                          padding: EdgeInsets.only(bottom: 1.0),
+                          child: Text(profileDetailsResponse?.data?.basicInfo!.user!.email ?? ""  ,
+                            style: TextStyle(color: Colors.white,  fontSize: 12),)),
+                      const SizedBox(height: 10.0,),
+                      const Divider(height: 5.0, color: Colors.white),
+                       IntrinsicHeight(
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(child:  Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+
+                                children: [
                                   Text(
-                                    "4.5",
+
+                                    'Jobs Completed',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+
+                                        color: Colors.white,
+                                        fontSize: 13.0
+
+                                    ),
+                                  ),
+                                  Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Colors.white,
+
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )),
+                            VerticalDivider(width: 5.0,color: Colors.white,indent: 0, endIndent: 0,),
+
+                            Expanded(child:  Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Rewards',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      color: Colors.white,
+
+                                    ),
+                                  ),
+                                  Text(
+                                    profileDetailsResponse?.data?.rewards?.toString() ?? "",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
-                            ),
-                          )
-                        ]),
-                    const SizedBox(height: 10,),
-                    const Padding(
-                        padding: EdgeInsets.only(bottom: 1.0),
-                        child: Text("subrajitdeg54@gmail.com",
-                          style: TextStyle(color: Colors.white,  fontSize: 12),)),
-                    const SizedBox(height: 10.0,),
-                    const Divider(height: 5.0, color: Colors.white),
-                    const IntrinsicHeight(
+                            ),),
+                            VerticalDivider(width: 5.0,color: Colors.white,),
+                            Expanded(child:  Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Total Strikes',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      color: Colors.white,
 
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(child:  Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-
-                              children: [
-                                Text(
-
-                                  'Jobs Completed',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-
-                                    color: Colors.white,
-                                    fontSize: 13.0
-
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '0',
-                                  style: TextStyle(
-                                    color: Colors.white,
+                                  Text(
+                                    profileDetailsResponse?.data?.strikes?.toString() ?? "",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),),
+                            VerticalDivider(width: 5.0,color: Colors.white,),
+                            Expanded(child:  Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Total Flags',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      color: Colors.white,
 
-                                    fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
-                          )),
-                          VerticalDivider(width: 5.0,color: Colors.white,indent: 0, endIndent: 0,),
-
-                          Expanded(child:  Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Rewards',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Colors.white,
-
-                                  ),
-                                ),
-                                Text(
-                                  '0',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),),
-                          VerticalDivider(width: 5.0,color: Colors.white,),
-                          Expanded(child:  Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Total Strikes',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Colors.white,
-
-                                  ),
-                                ),
-                                Text(
-                                  '0',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),),
-                          VerticalDivider(width: 5.0,color: Colors.white,),
-                          Expanded(child:  Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Total Flags',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                    color: Colors.white,
-
-                                  ),
-                                ),
-                                Text(
-                                  '0',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),)
-                        ],
-                      ),
-                    )
-                  ],
+                                  Text(
+                                    profileDetailsResponse?.data?.flags.toString() ?? "",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),)
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-            // CustomScrollView(
-            //   slivers:[
-            //     SliverList(delegate: SliverChildBuilderDelegate(
-            //           (BuildContext context, int index) {
-            //         // Your first ListView.builder goes here
-            //         // Example: return ListTile(title: Text('Item $index'));
-            //       },
-            //     ))
-            //   ]
-            // ),
+
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -225,38 +270,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                   padding: EdgeInsets.only(bottom: 5.0),
                                   child: Text("Phone No.", style: TextStyle(color: Colors.grey),)),
-                              Text("5878088988.", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text(profileDetailsResponse?.data?.basicInfo!.phone ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
 
                               Padding(
                                   padding: EdgeInsets.only(bottom: 5.0, top: 15.0),
                                   child: Text("Caregiver Experience.", style: TextStyle(color: Colors.grey),)),
-                              Text("0 Years.", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
+                              Text(profileDetailsResponse?.data?.basicInfo!.experience.toString() ?? "0", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
                             ],
                           ),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                       padding: EdgeInsets.only(bottom: 5.0),
-                                      child: Text("Gender", style: TextStyle(color: Colors.grey),)),
-                                  Text("Male", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                                      child: Text( "Gender", style: TextStyle(color: Colors.grey),)),
+                                  Text(profileDetailsResponse?.data?.basicInfo!.gender ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
 
                                   Padding(
                                       padding: EdgeInsets.only(bottom: 5.0, top: 15.0),
                                       child: Text("DOB", style: TextStyle(color: Colors.grey),)),
-                                  Text("09-17-2005", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
+                                  Text(profileDetailsResponse?.data?.basicInfo!.dob ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
                                 ],
                               ),
                               InkWell(
@@ -293,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                   padding: EdgeInsets.only(bottom: 10.0),
                                   child: Text("Bio", style: TextStyle(color: Colors.grey),)),
-                              Text("Test Dinesh.", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text(profileDetailsResponse?.data?.basicInfo!.bio ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
                             ],
                           ),
                           InkWell(
@@ -367,10 +412,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          itemCount: _list.length.toInt(),
+                          itemCount: profileDetailsResponse?.data?.education!.length ?? 0,
                           itemBuilder: (context, index){
-                          return Qualification();
-                      }),
+                            return Qualification();
+                          }),
                     ),
 
                     Padding(
@@ -382,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(right: 10.0),
+                                  padding: EdgeInsets.only(right: 10.0),
                                   child: Icon(Icons.school, size: 30,)),
                               Text("Certificate/course", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),)
                             ],
@@ -395,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: ()=>showDialog<String>(
                               context: context,
                               builder: (BuildContext context) => Dialog.fullscreen(
-                               insetAnimationCurve: Curves.easeInOut,
+                                insetAnimationCurve: Curves.easeInOut,
 
                                 child: AddCertificateScreen(),
                               ),
@@ -409,9 +454,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
 
-
-
-
                   ],
                 ),
               ),
@@ -421,4 +463,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
 }

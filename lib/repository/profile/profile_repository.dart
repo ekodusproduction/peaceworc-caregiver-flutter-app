@@ -6,6 +6,7 @@ import 'package:peace_worc/model/profile/add_certificate_response.dart';
 
 import '../../api/api_client.dart';
 import '../../api/api_links.dart';
+import '../../model/profile/profile_details_model.dart';
 
 class ProfileRepo{
   Future<AddCertificateResponse> uploadCertificate(String certificateOrCourse,XFile? documnet, String startYear, String endYear ) async {
@@ -40,5 +41,22 @@ class ProfileRepo{
     }
 
     return addCertificateResponse;
+  }
+
+  Future<ProfileDetailsResponse> getProfileDetails( ) async {
+    ProfileDetailsResponse profileDetailsResponse;
+    final _apiClient = ApiClient.http();
+    try {
+      Response response = await _apiClient!.get(ApiLinks.fetchProfileDetailUrl);
+      print("Response ${response}");
+      profileDetailsResponse = ProfileDetailsResponse.fromJson(response.data);
+      print(profileDetailsResponse);
+    } on DioError catch (e){
+      // DioError dioError = e;
+      print('THERE IS SOME ERROR IN NETWORK CALL.. ERROR => ${e.error.toString()} and MESSAGE => ${e.message}');
+      profileDetailsResponse = ProfileDetailsResponse.withError(e.message);
+      // throw Exception(e);
+    }
+    return profileDetailsResponse;
   }
 }

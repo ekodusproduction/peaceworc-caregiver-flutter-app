@@ -11,8 +11,7 @@ class MyBidJobs extends StatefulWidget {
 
   @override
   State<MyBidJobs> createState() => _MyBidJobsState();
-
-
+  
 }
 
 class _MyBidJobsState extends State<MyBidJobs> {
@@ -20,15 +19,12 @@ class _MyBidJobsState extends State<MyBidJobs> {
   @override
   void initState() {
     super.initState();
-   // _controller = AnimationController(vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Dispatch your event here, after the widget is fully built.
       BlocProvider.of<JobBloc>(context).add(FetchBiddedJobs());
     });
   }
   @override
   void dispose() {
-  //  _controller.dispose();
     super.dispose();
   }
 
@@ -47,7 +43,6 @@ class _MyBidJobsState extends State<MyBidJobs> {
           );
         }
         if(state is BiddedJobSuccessfulState){
-          print("enteres in successfull");
             if(state.bidJobResponse.data!.isEmpty){
              return Center(
                child: Lottie.asset(
@@ -58,10 +53,15 @@ class _MyBidJobsState extends State<MyBidJobs> {
                 ),
              );
             }
-          return _ListItem(false, state.bidJobResponse);
+          return _listItem(false, state.bidJobResponse);
       }
         return Center(
-          child: Text("No Data found"),
+          child: Lottie.asset(
+            'lib/assets/internal_error.json',
+            width: 200,
+            height: 200,
+            fit: BoxFit.fill,
+          ),
         );
 
       },
@@ -69,7 +69,7 @@ class _MyBidJobsState extends State<MyBidJobs> {
 
 
   }
-  Widget _ListItem(loadingState, BidJobResponse bidJobResponse){
+  Widget _listItem(loadingState, BidJobResponse bidJobResponse){
     return Skeletonizer(
       enabled: loadingState,
       child: ListView.builder(
