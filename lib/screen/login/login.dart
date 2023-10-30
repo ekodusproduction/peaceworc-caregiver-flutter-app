@@ -238,10 +238,10 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass{
                     ),
                     onPressed: () {
                       FlutterBackgroundService().invoke('setAsForeground');
-                      if (_formKey.currentState!.validate()) {
-                        BlocProvider.of<LoginBloc>(context).
-                        add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
-                           }
+                      // if (_formKey.currentState!.validate()) {
+                      //   BlocProvider.of<LoginBloc>(context).
+                      //   add(LoginButtonClickedEvent(email: usernameController.text, password: passwordController.text, fcm_token:"teststststststs" ));
+                      //      }
 
 
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));

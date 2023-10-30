@@ -5,6 +5,7 @@ import 'package:peace_worc/bloc/login/login_bloc.dart';
 import 'package:peace_worc/repository/login_repository.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/login/login.dart';
+import 'package:peace_worc/screen/settings/document_upload.dart';
 import 'package:peace_worc/screen/splash/splash.dart';
 import 'package:peace_worc/services/background_service.dart';
 import 'package:peace_worc/services/connectivity_services.dart';
