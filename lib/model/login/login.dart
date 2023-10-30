@@ -1,7 +1,7 @@
 class Login {
   bool? success;
   String? message;
-  String? data;
+  Data? data;
   String? token;
   int? httpStatusCode;
   String? error;
@@ -12,7 +12,7 @@ class Login {
   Login.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
-    data = json['data'];
+    data = json['data'] != null ? Data.fromJson(json['data']): null;
     token = json['token'];
     httpStatusCode = json['http_status_code'];
   }
@@ -25,5 +25,16 @@ class Login {
     data['token'] = this.token;
     data['http_status_code'] = this.httpStatusCode;
     return data;
+  }
+}
+class Data{
+  String? name;
+  String? email;
+  Data(
+      {this.name, this.email});
+  Data.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    email = json['email'];
+
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:peace_worc/bloc/signup/signup_bloc.dart';
 import 'package:peace_worc/components/my_textfield.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/otp/otp.dart';
 class SignUpPage extends StatefulWidget {
@@ -10,9 +11,11 @@ class SignUpPage extends StatefulWidget {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage>{
+class _SignUpPageState extends State<SignUpPage> {
   final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   final String svgString = '''
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 166 202">
   <defs>
@@ -43,7 +46,6 @@ class _SignUpPageState extends State<SignUpPage>{
   @override
   void initState() {
     super.initState();
-
     myPasswordFocusNode = FocusNode();
     confirmPasswordFocusNode = FocusNode();
   }
@@ -65,7 +67,44 @@ class _SignUpPageState extends State<SignUpPage>{
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color.fromRGBO(0, 60, 129, 1),
-          body:Center(
+          body:BlocBuilder<SignupBloc, SignupState>(
+  builder: (context, state) {
+    if (state is SignUpLoadingState) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      );
+    }
+    if(state is SignUpErrorState){
+
+      _onWidgetDidBuild(() {
+          final snackBar = SnackBar(
+            content: Text(state.message.toString()),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change.
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
+
+    }
+
+    if (state is SignUpSuccessState) {
+        _onWidgetDidBuild(() {
+
+          print("pass");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OtpScreen(), settings: RouteSettings(arguments: emailController.text)));
+        });
+
+    }
+    return Center(
             child: SingleChildScrollView(
 
               child: Column(
@@ -92,18 +131,14 @@ class _SignUpPageState extends State<SignUpPage>{
                           fontWeight: FontWeight.bold
                       ),
                     ),
-                    const SizedBox(height: 18),
-
                     //username Field
-                    MyTextField(controller: usernameController, hintText: "Company Name *", obscureText: false, onChanged: (text){
-                      print('values $text');
-                    },  ),
+
                     const SizedBox(height: 18),
                     MyTextField(controller: usernameController, hintText: "Full Name *", obscureText: false, onChanged: (text){
                       print('values $text');
                     },  ),
                     const SizedBox(height: 18,),
-                    MyTextField(controller: usernameController, hintText: "Email Address", obscureText: false, onChanged: (text){
+                    MyTextField(controller: emailController, hintText: "Email Address", obscureText: false, onChanged: (text){
                       print('values $text');
                     },  ),
                     const SizedBox(height: 18,),
@@ -158,7 +193,7 @@ class _SignUpPageState extends State<SignUpPage>{
 
                             color: Colors.white
                         ),
-                        controller: passwordController,
+                        controller: confirmPasswordController,
                         obscureText: passwordVisible,
                         decoration: InputDecoration(
                           enabledBorder: const UnderlineInputBorder(
@@ -168,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage>{
                             borderSide: BorderSide(color: Colors.white),
                           ),
                           labelText: "Confirm Password *",
-                          hintText: _isFocused ? null : "password should be greater than 8 characters",
+                          hintText: _isConfirmPasswordFocused ? null : "password should be greater than 8 characters",
                           hintStyle: const TextStyle(color: Colors.white, fontSize: 10.0),
                           labelStyle: const TextStyle(color: Colors.white),
                           suffixIcon: IconButton(
@@ -211,8 +246,15 @@ class _SignUpPageState extends State<SignUpPage>{
                           //   ),
                           // );
                           // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          BlocProvider.of<SignupBloc>(context).add(
+                              SignUpButtonClickEvent(
+                                userName: usernameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  confirmPassword: confirmPasswordController.text,
+                                  fcmToken: "teststststststs"));
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
+                         // Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen()));
                         },
                         child: const Text(
                           'Register',
@@ -235,9 +277,16 @@ class _SignUpPageState extends State<SignUpPage>{
                   ]
               ),
             ),
-          )
+          );
+  },
+)
       ),
     );
   }
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
 
+  }
 }

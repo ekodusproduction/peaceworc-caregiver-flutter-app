@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/screen/home/home.dart';
 import 'package:peace_worc/screen/jobs/jobs.dart';
 import 'package:peace_worc/screen/profile/profileScreen.dart';
@@ -15,11 +16,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
   void onTap(int index) {
-    if (_selectedIndex != index) {
-      setState(() {
-        _selectedIndex = index;
-      });
+    if(mounted){
+      if (_selectedIndex != index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
     }
+
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    print("token ${getToken()}");
   }
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:peace_worc/hive/hive_init.dart';
-import 'package:peace_worc/model/login.dart';
+import 'package:peace_worc/model/login/login.dart';
 import 'api_links.dart';
 import 'package:http_helper/http_helper.dart';
 class ApiClient{
