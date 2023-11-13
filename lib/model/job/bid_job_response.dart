@@ -41,7 +41,7 @@ class Data {
   String? companyPhoto;
   String? jobTitle;
   String? careType;
-  List<String>? careItems;
+  List<CareItems>? careItems;
   String? startDate;
   String? startTime;
   String? endDate;
@@ -51,7 +51,7 @@ class Data {
   String? shortAddress;
   String? lat;
   String? long;
-  String? distance;
+  double? distance;
   String? description;
   List<String>? medicalHistory;
   List<String>? expertise;
@@ -95,7 +95,12 @@ class Data {
     companyPhoto = json['company_photo'];
     jobTitle = json['job_title'];
     careType = json['care_type'];
-    careItems = json['care_items'].cast<String>();
+    if (json['care_items'] != null) {
+      careItems = <CareItems>[];
+      json['care_items'].forEach((v) {
+        careItems!.add(CareItems.fromJson(v));
+      });
+    }
     startDate = json['start_date'];
     startTime = json['start_time'];
     endDate = json['end_date'];
@@ -107,8 +112,18 @@ class Data {
     long = json['long'];
     distance = json['distance'];
     description = json['description'];
-    medicalHistory = json['medical_history'].cast<String>();
-    expertise = json['expertise'].cast<String>();
+    if (json['medical_history'] != null) {
+      medicalHistory = <String>[];
+      json['medical_history'].forEach((v) {
+        medicalHistory!.add(v);
+      });
+    }
+    if (json['expertise'] != null) {
+      expertise = <String>[];
+      json['expertise'].forEach((v) {
+        expertise!.add(v);
+      });
+    }
     if (json['other_requirements'] != null) {
       otherRequirements = <String>[];
       json['other_requirements'].forEach((v) {
@@ -128,4 +143,26 @@ class Data {
   }
 
 
+}
+
+class CareItems {
+  String? age;
+  String? gender;
+  String? patientName;
+
+  CareItems({this.age, this.gender, this.patientName});
+
+  CareItems.fromJson(Map<String, dynamic> json) {
+    age = json['age'];
+    gender = json['gender'];
+    patientName = json['patient_name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['age'] = this.age;
+    data['gender'] = this.gender;
+    data['patient_name'] = this.patientName;
+    return data;
+  }
 }

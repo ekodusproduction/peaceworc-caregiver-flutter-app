@@ -10,6 +10,19 @@ Future<void> saveToken(String token) async {
   await Hive.box("user_data").put("token", token);
   //print(getToken());
 }
+Future<void> saveUserId(int id) async{
+  await Hive.box("user_data").put("userId", id);
+}
+
+int? getUserId() {
+  return Hive.box("user_data").get("userId", defaultValue: 0);
+}
+Future<void> saveLocation(String location) async{
+  await Hive.box("user_data").put("location", location);
+}
+String? getLocation() {
+  return Hive.box("user_data").get("location", defaultValue: "");
+}
 Future<void> saveRefreshToken(String token) async{
 
   await Hive.box("user_data").put('refresh_token', token);

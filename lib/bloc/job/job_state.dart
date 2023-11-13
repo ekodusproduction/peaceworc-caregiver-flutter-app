@@ -41,3 +41,28 @@ class CompletedJobFailedState extends JobState{
   final String message;
   CompletedJobFailedState(this.message);
 }
+
+class QuickCallLoadingState extends JobState{
+
+}
+class QuickCallSuccessState extends JobState{
+  final BidJobResponse bidJobResponse;
+  QuickCallSuccessState(this.bidJobResponse);
+}
+class QuickCallFailureState extends JobState{
+  final String message;
+  QuickCallFailureState(this.message);
+}
+
+class QuickCallDetailLoadingState extends JobState{
+
+}
+class QuickCallDetailSuccessState extends JobState{
+  final QuickCallDetailResponse bidJobResponse;
+  QuickCallDetailSuccessState(this.bidJobResponse);
+}
+class QuickCallDetailFailureState extends JobState{
+  final String message;
+  QuickCallDetailFailureState(this.message);
+
+}

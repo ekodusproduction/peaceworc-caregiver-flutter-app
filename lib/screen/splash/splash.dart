@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:peace_worc/hive/hive_init.dart';
+import 'package:peace_worc/model/login/login.dart';
 import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
 import '../dashboard/Dashboard.dart';
@@ -17,12 +19,26 @@ class _SplashScreenState extends State<SplashScreen> {
 
     super.initState();
     Timer(const Duration(seconds: 3),
-            ()=>Navigator.pushReplacement(context,
-            MaterialPageRoute(builder:
-                (context) =>
-                    const SignUpPage()
-            )
-        )
+            ()=>{
+              if(getToken() == null){
+                // Navigator.pop(context),
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder:
+                        (context) =>
+                    const LoginPage()
+                    )
+                )
+              }
+              else if(getToken() != null){
+                // Navigator.pop(context),
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder:
+                        (context) =>
+                    const DashboardScreen()
+                    )
+                )
+              }
+            }
     );
   }
   @override

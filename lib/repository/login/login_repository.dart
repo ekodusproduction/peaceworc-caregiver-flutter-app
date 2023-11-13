@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:peace_worc/api/api_client.dart';
 import 'package:peace_worc/api/api_links.dart';
 import 'package:peace_worc/model/login/login.dart';
@@ -13,6 +16,7 @@ class LoginRepo{
       print(ApiLinks.baseUrl+ ApiLinks.login);
       Response response = await _apiClient!.post(ApiLinks.login, data: params);
       print(response.data);
+     // log('Response${jsonEncode(response)}');
       _login = Login.fromJson(response.data);
       print(_login);
     } on DioError catch (e){

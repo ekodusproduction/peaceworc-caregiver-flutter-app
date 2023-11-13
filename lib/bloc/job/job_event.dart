@@ -66,3 +66,46 @@ class FetchCompletedJobsFailureEvent extends JobEvent{
   List<Object?> get props => [];
 
 }
+
+class FetchQuickCallJobEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
+class FetchQuickCallJobSuccessfulEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
+class FetchQuickCallJobFailureEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
+
+class FetchQuickCallDetailPageEvent extends JobEvent{
+  final int? id;
+  FetchQuickCallDetailPageEvent(this.id);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
+
+}
+
+class FetchQuickCallDetailSuccessEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+
+}
+class FetchQuickCallDetailFailureEvent extends JobEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+
+}

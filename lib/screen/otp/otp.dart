@@ -15,29 +15,38 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String? data;
-String defaultPin = "12345";
+String defaultPin = "";
+  int timerCount = 180;
+  Stream<int> timerStream = Stream<int>.empty();
+  StreamSubscription<int>? timerSubscription;
+  bool isTimerFinished = false;
 late String otp;
   @override
   void initState() {
     // TODO: implement initState
   _listenOtp;
-  //_resetLoader();
+  startCountDownTimer();
     super.initState();
   }
-   void _listenOtp() async{
-     await SmsAutoFill().listenForCode();
-     print("OTP Listen is called");
+  void _listenOtp() async {
+    var result = await SmsAutoFill().listenForCode;
+    print("OTP Listen is called");
+    // if (result != null && result) {
+    //   setState(() {
+    //     defaultPin = result;
+    //   });
+    // }
+  }
+
+
+  @override
+   void dispose(){
+    timerSubscription?.cancel();
+    _listenOtp();
+     super.dispose();
+     //...
    }
 
-   // void _resetLoader() async{
-   //   Timer(Duration(seconds: 10), () {
-   //     print("enters herer");
-   //     setState(() {
-   //       isLoaded = false;
-   //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
-   //     });
-   //   });
-   // }
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as String?;
@@ -46,18 +55,20 @@ late String otp;
       child: Scaffold(
         backgroundColor: Color.fromRGBO(0, 60, 129, 1),
         appBar: AppBar(
-          leading: const BackButton(
-            color: Colors.white, // <-- SEE HERE
+          leading:  BackButton(
+            color: Colors.white,
+            onPressed: (){
+              Navigator.pop(context);
+              //Navigator.pu
+            },
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
-
-
         ),
         body:  BlocBuilder<OtpBloc, OtpState>(
   builder: (context, state) {
     if(state is OtpLoadingState){
-      return Center(child: CircularProgressIndicator(color: Colors.white,));
+      return const Center(child: CircularProgressIndicator(color: Colors.white,));
     }
     if(state is OtpVerifiedSuccessState){
       _onWidgetDidBuild(() {
@@ -74,9 +85,9 @@ late String otp;
       Fluttertoast.showToast(
           msg: state.message.toString(),
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.grey,
           textColor: Colors.white,
           fontSize: 16.0
       );
@@ -94,18 +105,16 @@ late String otp;
                           padding: EdgeInsets.only(bottom: 30, top:15.0, right: 20.0, left: 20.0),
                           child: Text("Enter the 6 digits OTP sent to your email", style: TextStyle(color: Colors.white, fontSize: 14),)),
                       Padding(
-                        padding: EdgeInsets.only(top:10.0, right: 40.0, left: 40.0, bottom: 10.0),
+                        padding: const EdgeInsets.only(top:10.0, right: 40.0, left: 40.0, bottom: 10.0),
                         child: PinCodeTextField(
                           keyboardType: TextInputType.number,
                           appContext: context,
                           length: 6,
                           obscureText: false,
                           cursorColor: Colors.white,
-                          textStyle: TextStyle(color: Colors.white),
+                          textStyle: const TextStyle(color: Colors.white),
                           animationType: AnimationType.fade,
                           autoFocus: true,
-
-
                           pinTheme: PinTheme(
                               activeColor: Colors.white,
                             inactiveColor: Colors.white,
@@ -118,13 +127,18 @@ late String otp;
                               selectedColor: Colors.white,
                               selectedFillColor: Colors.transparent
                           ),
-                          animationDuration: Duration(milliseconds: 300),
+                          animationDuration:const Duration(milliseconds: 300),
                           backgroundColor: Colors.transparent,
                           enableActiveFill: true,
                           // errorAnimationController: errorController,
                            controller: TextEditingController(text: defaultPin),
                           onCompleted: (v) {
                             print("Completed${v}");
+                            BlocProvider.of<OtpBloc>(context).add(
+                                OtpButtonClickEvent(
+                                    email: data!,
+                                    otp: v
+                                ));
                             setState(() {
                               otp = v;
                             });
@@ -146,15 +160,19 @@ late String otp;
 
                     ],
                   ),
-                  const Padding(
+                  SizedBox(height: 10,),
+                  Padding(
                     padding: EdgeInsets.only(top:10.0, left: 20.0, right: 20.0, bottom: 20.0),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("Resend", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12.0),)
-                        ]),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Visibility(child: Text('OTP will be expired in : $timerCount seconds', style: TextStyle(color: Colors.white, fontSize: 16),), visible: !isTimerFinished,),
+                        Visibility(child: Text('Resend', style: TextStyle(color: Colors.white, fontSize: 14),), visible: isTimerFinished, )
+                      ],
+                    ),
                   ),
+
+
                   Container(
                     margin: const EdgeInsets.only(right: 20.0, left: 20.0),
                     child: ElevatedButton(
@@ -198,4 +216,22 @@ late String otp;
     });
 
   }
+
+  void startCountDownTimer() {
+    timerStream = Stream.periodic(const Duration(seconds: 1), (x) => timerCount - x - 1)
+        .take(timerCount)
+        .asBroadcastStream();
+
+    timerSubscription = timerStream.listen((int remainingTime) {
+      setState(() {
+        if (remainingTime == 0) {
+          isTimerFinished = true;
+        }
+        timerCount = remainingTime;
+      });
+    });
+  }
+
+
+
 }

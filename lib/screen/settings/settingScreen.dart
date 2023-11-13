@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:peace_worc/bloc/logout/settings_bloc.dart';
+import 'package:peace_worc/bloc/settings/settings_bloc.dart';
 import 'package:peace_worc/components/setting_component.dart';
 import 'package:peace_worc/constants/settings/setting_constant.dart';
 import 'package:peace_worc/screen/changePassword/change_password.dart';
@@ -40,18 +40,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),);
     }
     if(state is LogoutSuccessState){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginPage()), (route) => false);
+     // print("enters here dinesh");
+      _onWidgetDidBuild((){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginPage()), (route) => false);
+      });
+
     }
     if(state is LogoutFailureState){
-      Fluttertoast.showToast(
-          msg: "This is Center Short Toast",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      _onWidgetDidBuild((){
+        Fluttertoast.showToast(
+            msg: state.message,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      });
+
     }
     return Column(
           children: [
@@ -64,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },),
             const SettingComponent(settingName: Settings.earnings, iconName: Icons.account_balance_wallet_outlined),
             SettingComponent(settingName:Settings.strikes, iconName: Icons.block, onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const StrikeScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const StrikeScreen(fromMainScreen: false,)));
             },),
             SettingComponent(settingName: Settings.flags, iconName: Icons.flag_circle_outlined, onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => const FlagScreen()));
@@ -90,6 +97,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
              Navigator.of(context).pop();
 
         }, onYesTap: (){
+
+
+
           Navigator.of(context).pop();
           context
               .read<SettingsBloc>()
@@ -98,5 +108,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },);
       },
     );
+  }
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
 import 'package:peace_worc/components/my_textfield.dart';
@@ -111,16 +112,26 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass {
 
                 if(state is LoginErrorState){
                   _onWidgetDidBuild(() {
-                    final snackBar = SnackBar(
-                      content: Text(state.message!),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () {
-                          // Some code to undo the change.
-                        },
-                      ),
+                    // final snackBar = SnackBar(
+                    //   content: Text(state.message!),
+                    //   action: SnackBarAction(
+                    //     label: 'Undo',
+                    //     onPressed: () {
+                    //       // Some code to undo the change.
+                    //     },
+                    //   ),
+                    // );
+                    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                    Fluttertoast.showToast(
+                        msg: state.message!,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.grey,
+                        textColor: Colors.white,
+                        fontSize: 14.0
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   });
                 }
                 return Center(
@@ -165,7 +176,6 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass {
                                   //print('values $text');
                                 },
                                 validator: (String? value) {
-                                  print("test ${isEmailValid(value!)}");
                                   if (!isEmailValid(value!)) {
                                     return "Invalid Email address";
                                   }
@@ -272,9 +282,9 @@ class _LoginPageState extends State<LoginPage> with LoginValidationMixinClass {
                             ),
                             GestureDetector(
                                 onTap: () {
-                                  context
-                                      .read<LoginBloc>()
-                                      .add(LoginRegisterNavigateEvent());
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/register', (Route<dynamic> route) => false);
+                                  //Navigator.pushReplacementNamed(context, '/register');
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

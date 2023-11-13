@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:peace_worc/bloc/chat/chat_bloc.dart';
 import 'package:peace_worc/bloc/internet/internet_bloc.dart';
 import 'package:peace_worc/bloc/job/job_bloc.dart';
 import 'package:peace_worc/bloc/login/login_bloc.dart';
-import 'package:peace_worc/bloc/logout/settings_bloc.dart';
 import 'package:peace_worc/bloc/otp/otp_bloc.dart';
 import 'package:peace_worc/bloc/profile/add_certificate_bloc.dart';
 import 'package:peace_worc/bloc/profile/profile_details_bloc.dart';
 import 'package:peace_worc/bloc/signup/signup_bloc.dart';
+import 'package:peace_worc/bloc/welcome/welcome_bloc.dart';
 import 'package:peace_worc/repository/login/login_repository.dart';
+import 'package:peace_worc/screen/chat/chat_screen.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/login/login.dart';
+import 'package:peace_worc/screen/profile/basic_info.dart';
+import 'package:peace_worc/screen/profile/profile_registration.dart';
+import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
+import 'package:peace_worc/screen/signup/signup.dart';
 import 'package:peace_worc/screen/splash/splash.dart';
+import 'package:peace_worc/screen/welcome/welcome_screen.dart';
 import 'package:peace_worc/services/background_service.dart';
 import 'package:peace_worc/services/connectivity_services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'bloc/settings/settings_bloc.dart';
 import 'hive/hive_init.dart';
 
 Future<void> main() async {
@@ -90,9 +99,31 @@ class MyApp extends StatelessWidget {
                   ),
 
             ),
+            BlocProvider(
+              create: (context) =>
+                  WelcomeBloc(
 
-          ], child: const MaterialApp(home: LoginPage(), title: 'Peaceworc Caregiver',
-      debugShowCheckedModeBanner: false,),
+                  ),
+
+            ),
+            BlocProvider(
+              create: (context) =>
+                  ChatBloc(
+
+                  ),
+
+            )
+
+          ], child:  ScreenUtilInit(
+      builder: (context, child)=>MaterialApp(
+        routes: {
+          '/login': (context) => LoginPage(),
+          '/register': (context) => SignUpPage(),
+          // Add other routes here
+        },
+        home: OptionalRegScreen(), title: 'Peaceworc Caregiver',
+        debugShowCheckedModeBanner: false,),
+    ),
 
         );
 

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:peace_worc/model/job/bid_job_response.dart';
+import 'package:peace_worc/model/job/quick_call_detail_response.dart';
 import 'package:peace_worc/repository/job/job_repository.dart';
 
 
@@ -16,6 +17,8 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     on<FetchBiddedJobs>(fetchBiddedJobs);
     on<FetchAwardedJobs>(fetchAwardedJobs);
     on<FetchCompletedJobs>(fetchCompletedJobs);
+    on<FetchQuickCallJobEvent> (fetchQuickCallJobs);
+    on<FetchQuickCallDetailPageEvent>(fetchQuickCallDetailPageEvent);
   }
 
   Future<FutureOr<void>> fetchBiddedJobs(FetchBiddedJobs event, Emitter<JobState> emit) async {
@@ -60,6 +63,40 @@ class JobBloc extends Bloc<JobEvent, JobState> {
       }
     }catch(e){
       print("Fetch Upcoming Job Exception"+e.toString());
+    }
+  }
+
+  FutureOr<void> fetchQuickCallJobs(FetchQuickCallJobEvent event, Emitter<JobState> emit) async {
+    try{
+      emit(QuickCallLoadingState());
+      final response = await jobRepo.fetchQuickCallJobs();
+      if(response.httpStatusCode == 400 || response.httpStatusCode == 401){
+        emit(QuickCallFailureState(response.message!));
+      }
+      if(response.httpStatusCode == 200){
+        print("succccccccccc");
+       // print("emitResponse"+response.data[0].careItems[0].);
+        emit(QuickCallSuccessState(response));
+      }
+    }catch(e){
+      print("Fetch Quick call Job Exceptionsssss"+e.toString());
+    }
+  }
+
+  FutureOr<void> fetchQuickCallDetailPageEvent(FetchQuickCallDetailPageEvent event, Emitter<JobState> emit) async {
+
+    try{
+      emit(QuickCallDetailLoadingState());
+      final response = await jobRepo.fetchQuickCallSingleDetail(event.id!);
+      if(response.httpStatusCode == 400 || response.httpStatusCode == 401){
+        emit(QuickCallDetailFailureState(response.message!));
+      }
+      if(response.httpStatusCode == 200){
+        // print("emitResponse"+response.data[0].careItems[0].);
+        emit(QuickCallDetailSuccessState(response));
+      }
+    }catch(e){
+      print("Fetch Quick call Job Detial page Exception"+e.toString());
     }
   }
 }
