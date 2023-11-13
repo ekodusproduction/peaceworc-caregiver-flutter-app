@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:peace_worc/components/List/location_list_title.dart';
+import 'package:peace_worc/screen/location/location_assist.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -98,6 +99,29 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
           children: <Widget>[
             SizedBox(height: 20),
             placeApiWidgetTwo(context),
+            SizedBox(height: 20,),
+            Center(child: Text("Or", style: TextStyle(color: Colors.black87, fontSize: 18),)),
+            Padding(
+              padding: EdgeInsets.only(top:15),
+              child: InkWell(
+                onTap: () async{
+                 var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const LocationAssist())) as LocationModel?;
+                 if (!mounted) return;
+                 if(result != null){
+                   print('search loc => $result');
+                   Navigator.pop(context,result);
+                 }
+                },
+                child: Row(
+mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.location_searching_rounded, color: Colors.black, size: 20,),
+                    SizedBox(width: 10,),
+                    Text("Use Your current location", style: TextStyle(color: Colors.black87, fontSize: 18))
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

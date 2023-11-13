@@ -1,15 +1,27 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:peace_worc/bloc/job/job_bloc.dart';
 import 'package:peace_worc/components/card/job_card_item.dart';
 import 'package:peace_worc/components/card/quick_call.dart';
+import 'package:peace_worc/components/card/quick_call_test_card.dart';
+import 'package:peace_worc/hive/hive_init.dart';
+import 'package:peace_worc/screen/jobs/jobs.dart';
 import 'package:peace_worc/screen/jobs/open_job_detail.dart';
+import 'package:peace_worc/screen/location/location_assist.dart';
 import 'package:peace_worc/screen/location/search_job.dart';
 import 'package:peace_worc/screen/location/search_location.dart';
+import 'package:peace_worc/screen/settings/strike_screen.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../components/card/highlight_card.dart';
+import '../../model/job/bid_job_response.dart';
 import '../jobs/job_detail.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
+import 'package:vector_math/vector_math.dart'as vm;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -18,21 +30,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Stream<int> getSecondsFromCurrentMinute() async* {
+    final now = DateTime.now();
+    final seconds = now.second;
+    yield seconds;
+    await Future.delayed(Duration(seconds: 1 - seconds));
+    yield* getSecondsFromCurrentMinute();
+  }
+  bool returnedFromDetailPage = false;
   late ScrollController _scrollController;
   bool _stretch = true;
   Color appBarColor = Colors.transparent;
   double appBarElevatation = 0.0;
-  late GoogleMapController mapController;
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  late gm.GoogleMapController mapController;
+   gm.LatLng _center = const gm.LatLng(45.521563, -122.677433);
   String message = "";
   List pages = ['Home', 'About', 'Careers', 'Contact Us', 'Blog', 'Disclaimer'];
   int _cIndex = 0;
+  String locality = '';
   void _incrementTab(index) {
     setState(() {
       _cIndex = index;
     });
   }
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated(gm.GoogleMapController controller) {
     mapController = controller;
   }
 
@@ -40,9 +61,26 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(_scrollListener);
+    print("userId${getUserId()}");
+    locality = getLocation().toString();
     super.initState();
+    print("called on press back");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
+    });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+      print("changedeppendencies");
+    // Check if returning from a detail page and trigger the event
+    if (returnedFromDetailPage) {
+      print("enterd here");
+      BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
+      returnedFromDetailPage = false; // Reset the flag
+    }
+  }
   _scrollListener() {
     if (_scrollController.offset >= 320) {
       setState(() {
@@ -66,8 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _scrollController.dispose();
     super.dispose();
   }
+  Set<gm.Marker> marker = {};
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -77,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
         scrolledUnderElevation: 0,
         backgroundColor: appBarColor,
         title: Padding(
-          padding: EdgeInsets.all(0.0),
+          padding: const EdgeInsets.all(0.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -95,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                      ],
                    ),
                  ),
-              Icon(
+              const Icon(
                 Icons.message,
                 size: 40.0,
                 color: Color.fromRGBO(0, 60, 129, 1),
@@ -105,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body:  NestedScrollView(
+        physics: BouncingScrollPhysics(),
       controller: _scrollController,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
@@ -117,85 +158,113 @@ class _HomeScreenState extends State<HomeScreen> {
            collapsedHeight: 60,
             backgroundColor: Colors.transparent,
 
-            flexibleSpace: FlexibleSpaceBar(
-              title:null,
-              titlePadding: EdgeInsets.zero,
-              background: Stack(
-                children: [
-                  GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: _center,
-                      zoom: 11.0,
-                    ),
-                  ),
-                  Positioned(
-                      top:95,
-                      left: 15,
-                    right: 15,
-                      child: Material(
-                        elevation: 10.0,
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Container(
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints){
+                return FlexibleSpaceBar(
+                  title:null,
+                  titlePadding: EdgeInsets.zero,
+                  background: Stack(
+                    children: [
+                      Flex(
+                        direction: Axis.vertical,
+                        children:[
+                          Expanded(
+                            child: gm.GoogleMap(
+                              myLocationEnabled: true,
+                              zoomControlsEnabled: true,
+                              zoomGesturesEnabled: true,
+                              onMapCreated: _onMapCreated,
+                              initialCameraPosition: gm.CameraPosition(
 
-                          decoration: BoxDecoration(
+                                target: _center,
+                                zoom: 11.0,
+                              ),
+                              markers: marker,
+                            ),
+                          )
+                        ] ,
+                      ),
+                      Positioned(
+                          top:95,
+                          left: 15,
+                          right: 15,
+                          child: Material(
+                            elevation: 10.0,
                             borderRadius: BorderRadius.circular(10.0),
-                            color: Colors.white,
+                            child: Container(
 
-                          ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.white,
+
+                              ),
 
 
-                    child: Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                                onTap: (){
-                                  showDialog<String>(
-                                    context: context,
-                                    builder: (BuildContext context) => Dialog.fullscreen(
-                                      insetAnimationCurve: Curves.easeInOut,
-                                      child: SearchJobScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Icon(Icons.search, size: 30, color: Colors.grey[400],)),
-                            InkWell(
-                              onTap: (){
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) => Dialog.fullscreen(
-                                    insetAnimationCurve: Curves.easeInOut,
-                                    child: SearchLocationScreen(),
-                                  ),
-                                );
-                              },
-                              child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                        onTap: (){
+                                          showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) => Dialog.fullscreen(
+                                              insetAnimationCurve: Curves.easeInOut,
+                                              child: SearchJobScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: Icon(Icons.search, size: 30, color: Colors.grey[400],)),
+                                    InkWell(
+                                      onTap: () async {
+                                        var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchLocationScreen())) as LocationModel?;
+                                        if(!mounted) return;
+                                        if(result != null){
+                                          print("home page => ${result.lat}");
+                                          final double bearing = getBearing(gm.LatLng(45.521563, -122.677433), gm.LatLng(result.lat, result.long));
+                                          mapController.animateCamera(gm.CameraUpdate.newCameraPosition(gm.CameraPosition(target: gm.LatLng(result.lat, result.long), zoom: 14)));
+                                          marker.clear();
+                                          marker.add(gm.Marker(markerId: const gm.MarkerId('currentLocation'), position: gm.LatLng(result.lat, result.long), flat: true,
 
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7.0),
-                                  color: Colors.grey[200],
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Icon(Icons.location_on_outlined, size: 18,),
-                                      Text("Guwahati", style: TextStyle(color: Colors.black, fontSize: 12),)
-                                    ],
-                                  ),
+                                              rotation: bearing,
+
+                                              draggable: false));
+                                          saveLocation(result.locality);
+                                          setState(() {
+                                            locality = result.locality!;
+
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(7.0),
+                                          color: Colors.grey[200],
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Icon(Icons.location_on_outlined, size: 18,),
+                                              Text(locality, style: TextStyle(color: Colors.black, fontSize: 12),)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                    ),
+                            ),
+                          ))
+                    ],
                   ),
-                      ))
-                ],
-              ),
+                );
+        }
+
             ),
           ),
         ];
@@ -206,20 +275,76 @@ class _HomeScreenState extends State<HomeScreen> {
 
             Container(
               margin: EdgeInsets.only(top:15, left:10, right:10, bottom: 30),
-              child: const Flex(
+              child:  Flex(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Jobs', iconName: Icons.work, imageName: "case.png",)),
+                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Jobs', iconName: Icons.work, imageName: "case.png", onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => JobsScreen()));
+                  },)),
                   Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Rewards', iconName: Icons.currency_bitcoin, imageName: "earnings.png",)),
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Strikes', iconName: Icons.handshake, imageName: "ad-block.png",)),
+                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Strikes', iconName: Icons.handshake, imageName: "ad-block.png",  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => StrikeScreen(fromMainScreen: true,)));
+                  },)),
                   Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Earnings', iconName: Icons.currency_bitcoin, imageName: "medal.png",))
 
                 ],
               ),
             ),
-            const SizedBox(height: 10.0,),
+
+            BlocBuilder<JobBloc, JobState>(
+              builder: (context, state) {
+                if( state is QuickCallLoadingState){
+                  return Skeletonizer(
+                      child: Column(
+                        children: [
+                          _quickCallHeader(),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 250,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return JobCardItem(index: index);
+                              },
+                            ),
+                          )
+                        ],
+                      )
+                  );
+                }
+                if(state is QuickCallSuccessState){
+                  print("successState");
+                 // print(state.bidJobResponse.data.)
+                  if(state.bidJobResponse.data!.isEmpty){
+                    return const SizedBox.shrink();
+                  }
+                  return Column(
+                    children: [
+                      _quickCallHeader(),
+                      SizedBox(
+                          width: double.infinity,
+                          height: 250,
+                          child: _listItem(false, state.bidJobResponse)
+
+                      )
+                    ],
+                  );
+
+
+                }
+                return SizedBox.shrink();
+
+              },
+            ),
             Container(
               child: Padding(
                 padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 15.0, bottom: 15.0),
@@ -228,53 +353,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Text("Open Jobs", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),),
                     GestureDetector(child: const Text("See All", style: TextStyle(color: Colors.lightBlueAccent,  fontSize: 13),)
-
                     )
                   ],
                 ),
               ),
             ),
 
+            ListView.builder(
+              padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+              itemCount: 2,
+              itemBuilder: (context, index){
+                  return JobCardItem(index: index, onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OpenJobDetailScreen()));
+                  },);
+              },
+            )   ,         //const SizedBox(height: 10.0,),
 
-            SizedBox(
-              width: double.infinity,
-              height: 250,
 
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: pages.length,
-                  itemBuilder: (context, index){
-                    return JobCardItem(index: index, onTap: (){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  OpenJobDetailScreen()));
-                    },);
-                  }),
-            ),
-            Container(
-              child: Padding(
-                padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 15.0, bottom: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Quick Calls", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),),
-                    GestureDetector(child: const Text("See All", style: TextStyle(color: Colors.lightBlueAccent,  fontSize: 13),)
-
-                    )
-                  ],
-                ),
-              ),
-            ),
-            QuickCallCard(jobName: "Test Job", onTap: ()=>{
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          JobDetail()))
-            },)
 
 
           ],
@@ -287,4 +388,85 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
   }
+  Widget _listItem(loadingState, BidJobResponse bidJobResponse){
+    return Skeletonizer(
+      enabled: loadingState,
+      child:ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: pages.length,
+          itemBuilder: (context, index){
+            return  QuickCallCard(bidJobResponse: bidJobResponse, onTap: () async {
+              final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          JobDetail(id: bidJobResponse!.data?[0]!.jobId!,))
+
+             );
+
+              // if (!mounted) return;
+              // print("reesult ${result}");
+              // if(result != null){
+              //   if (result == 'quickDetailPage') {
+              //     print("passed");
+              //
+              //     // Future.delayed(Duration.zero, () {
+              //     //   BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
+              //     // });
+              //   }
+              // }
+
+
+            },);
+
+          }),
+    );
+  }
+  Widget _quickCallHeader(){
+   return Container(
+      child: Padding(
+        padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 15.0, bottom: 15.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text("Quick Calls", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),),
+            GestureDetector(child: const Text("See All", style: TextStyle(color: Colors.lightBlueAccent,  fontSize: 13),)
+
+            )
+          ],
+        ),
+      ),
+    );
+  }
+  double getBearing(LatLng begin, LatLng end) {
+
+    double lat = (begin.latitude - end.latitude).abs();
+
+    double lng = (begin.longitude - end.longitude).abs();
+
+
+
+    if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+
+      return vm.degrees(atan(lng / lat));
+
+    } else if (begin.latitude >= end.latitude && begin.longitude < end.longitude) {
+
+      return (90 - vm.degrees(atan(lng / lat))) + 90;
+
+    } else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude) {
+
+      return vm.degrees(atan(lng / lat)) + 180;
+
+    } else if (begin.latitude < end.latitude && begin.longitude >= end.longitude) {
+
+      return (90 - vm.degrees(atan(lng / lat))) + 270;
+
+    }
+
+    return -1;
+
+  }
+
 }

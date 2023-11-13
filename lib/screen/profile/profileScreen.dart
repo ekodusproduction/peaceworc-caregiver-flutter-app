@@ -11,7 +11,6 @@ import 'package:peace_worc/screen/profile/add_certificate_screen.dart';
 import 'package:peace_worc/screen/profile/edit_education_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../api/api_links.dart';
 class ProfileScreen extends StatefulWidget {
    const ProfileScreen({super.key});
 
@@ -20,13 +19,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final List _list = [
-    "test1",
-    "test2",
-    "test2",
-    "test2",
-
-  ];
 
   @override
   void initState() {
@@ -82,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(top:10.0, bottom: 20.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children:[
                             CachedNetworkImage(
                               imageUrl:"https://peaceworc-phase2-dev.ekodusproject.tech/${profileDetailsResponse?.data?.basicInfo!.photo}" ??  "https://picsum.photos/250?image=9",
-                              errorWidget: (context, url, error) => Text("error"),
+                              errorWidget: (context, url, error) => const Text("error"),
                               imageBuilder: (context, imageProvider) => Skeleton.shade(
                                 child: CircleAvatar(
                                   radius: 50,
@@ -112,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Skeleton.shade(
                                 child: Container(
 
-                                  padding: EdgeInsets.only(top:2,bottom: 2),
+                                  padding: const EdgeInsets.only(top:2,bottom: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.greenAccent,
                                     borderRadius: BorderRadius.circular(12.0),
@@ -142,9 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ]),
                       const SizedBox(height: 10,),
                        Padding(
-                          padding: EdgeInsets.only(bottom: 1.0),
+                          padding: const EdgeInsets.only(bottom: 1.0),
                           child: Text(profileDetailsResponse?.data?.basicInfo!.user!.email ?? ""  ,
-                            style: TextStyle(color: Colors.white,  fontSize: 12),)),
+                            style: const TextStyle(color: Colors.white,  fontSize: 12),)),
                       const SizedBox(height: 10.0,),
                       const Divider(height: 5.0, color: Colors.white),
                        IntrinsicHeight(
@@ -152,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Expanded(child:  Padding(
+                            const Expanded(child:  Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Column(
 
@@ -179,13 +171,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ],
                               ),
                             )),
-                            VerticalDivider(width: 5.0,color: Colors.white,indent: 0, endIndent: 0,),
+                            const VerticalDivider(width: 5.0,color: Colors.white,indent: 0, endIndent: 0,),
 
                             Expanded(child:  Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Rewards',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -196,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     profileDetailsResponse?.data?.rewards?.toString() ?? "",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -204,12 +196,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ],
                               ),
                             ),),
-                            VerticalDivider(width: 5.0,color: Colors.white,),
+                            const VerticalDivider(width: 5.0,color: Colors.white,),
                             Expanded(child:  Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Total Strikes',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -220,7 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     profileDetailsResponse?.data?.strikes?.toString() ?? "",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -228,12 +220,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ],
                               ),
                             ),),
-                            VerticalDivider(width: 5.0,color: Colors.white,),
+                            const VerticalDivider(width: 5.0,color: Colors.white,),
                             Expanded(child:  Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Column(
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Total Flags',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -244,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     profileDetailsResponse?.data?.flags.toString() ?? "",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -266,7 +258,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -274,12 +266,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
+                              const Padding(
                                   padding: EdgeInsets.only(bottom: 5.0),
                                   child: Text("Phone No.", style: TextStyle(color: Colors.grey),)),
                               Text(profileDetailsResponse?.data?.basicInfo!.phone ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
 
-                              Padding(
+                              const Padding(
                                   padding: EdgeInsets.only(bottom: 5.0, top: 15.0),
                                   child: Text("Caregiver Experience.", style: TextStyle(color: Colors.grey),)),
                               Text(profileDetailsResponse?.data?.basicInfo!.experience.toString() ?? "0", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
@@ -293,12 +285,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
+                                  const Padding(
                                       padding: EdgeInsets.only(bottom: 5.0),
                                       child: Text( "Gender", style: TextStyle(color: Colors.grey),)),
                                   Text(profileDetailsResponse?.data?.basicInfo!.gender ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
 
-                                  Padding(
+                                  const Padding(
                                       padding: EdgeInsets.only(bottom: 5.0, top: 15.0),
                                       child: Text("DOB", style: TextStyle(color: Colors.grey),)),
                                   Text(profileDetailsResponse?.data?.basicInfo!.dob ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14))
@@ -308,13 +300,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onTap: (){
                                   showDialog<String>(
                                     context: context,
-                                    builder: (BuildContext context) => Dialog.fullscreen(
+                                    builder: (BuildContext context) =>  Dialog.fullscreen(
                                       insetAnimationCurve: Curves.easeInOut,
-                                      child: AddBasicInformationScreen(),
+                                      child: AddBasicInformationScreen(phoneNumner: profileDetailsResponse?.data?.basicInfo!.phone, experience: profileDetailsResponse?.data?.basicInfo!.experience.toString()),
                                     ),
                                   );
                                 },
-                                child: Column(
+                                child: const Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Icon(Icons.edit_outlined, size: 25,)
@@ -327,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Divider(height: 3.0, color: Colors.grey[400],),
                     Padding(
-                      padding: EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -335,23 +327,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
+                              const Padding(
                                   padding: EdgeInsets.only(bottom: 10.0),
                                   child: Text("Bio", style: TextStyle(color: Colors.grey),)),
-                              Text(profileDetailsResponse?.data?.basicInfo!.bio ?? "", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text(profileDetailsResponse?.data?.basicInfo!.bio ?? "", style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
                             ],
                           ),
                           InkWell(
                             onTap: (){
                               showDialog<String>(
                                 context: context,
-                                builder: (BuildContext context) => Dialog.fullscreen(
+                                builder: (BuildContext context) =>  Dialog.fullscreen(
                                   insetAnimationCurve: Curves.easeInOut,
-                                  child: AddBioDetailsScreen(),
+                                  child: AddBioDetailsScreen(bio: profileDetailsResponse?.data?.basicInfo!.bio),
                                 ),
                               );
                             },
-                            child: Column(
+                            child: const Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Icons.edit_outlined, size: 25,)
@@ -367,7 +359,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Education", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                          const Text("Education", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                           PopupMenuButton(
                             // add icon, by default "3 dot" icon
                             // icon: Icon(Icons.book)
@@ -409,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Container(
                       width: double.infinity,
                       child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           itemCount: profileDetailsResponse?.data?.education!.length ?? 0,
@@ -419,7 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     Padding(
-                      padding: EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -439,7 +431,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             onPressed: ()=>showDialog<String>(
                               context: context,
-                              builder: (BuildContext context) => Dialog.fullscreen(
+                              builder: (BuildContext context) => const Dialog.fullscreen(
                                 insetAnimationCurve: Curves.easeInOut,
 
                                 child: AddCertificateScreen(),

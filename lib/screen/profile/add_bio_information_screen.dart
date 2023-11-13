@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 class AddBioDetailsScreen extends StatefulWidget {
-  const AddBioDetailsScreen({super.key});
+  final String? bio;
+  const AddBioDetailsScreen({super.key,  required this.bio});
 
   @override
   State<AddBioDetailsScreen> createState() => _AddBioDetailsScreenState();
@@ -9,7 +10,13 @@ class AddBioDetailsScreen extends StatefulWidget {
 class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
   final bioController = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    bioController.text = widget.bio!;
+  }
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -19,7 +26,7 @@ class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
+            const Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -31,7 +38,7 @@ class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
               onTap: () {
                 Navigator.pop(context); //close Dialog
               },
-              child: Icon(
+              child: const Icon(
                 Icons.close,
                 size: 30.0,
                 color: Color.fromRGBO(0, 60, 129, 1),
@@ -55,8 +62,8 @@ class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
               ),
               controller: bioController,
               obscureText: false,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
                     borderSide: BorderSide(
                         color: Colors.transparent
                     )
@@ -71,10 +78,10 @@ class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
                   borderSide: BorderSide(color: Colors.black),
                 ),
                 labelText: "Bio",
-                labelStyle: const TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
 
-                hintStyle: const TextStyle(color: Colors.black, fontSize: 10.0),
+                hintStyle: TextStyle(color: Colors.black, fontSize: 10.0),
 
 
 
@@ -96,10 +103,10 @@ class _AddBioDetailsScreenState extends State<AddBioDetailsScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(right:15.0, left:15.0, bottom : 10.0),
+                padding: const EdgeInsets.only(right:15.0, left:15.0, bottom : 10.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(0, 60, 129, 1),
+                    backgroundColor: const Color.fromRGBO(0, 60, 129, 1),
                     minimumSize: const Size.fromHeight(50), // NEW
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0)

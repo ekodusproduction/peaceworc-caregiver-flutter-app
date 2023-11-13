@@ -1,4 +1,5 @@
 class Login {
+
   bool? success;
   String? message;
   Data? data;
@@ -28,11 +29,13 @@ class Login {
   }
 }
 class Data{
+  int? id;
   String? name;
   String? email;
   Data(
-      {this.name, this.email});
+      {this.id, this.name, this.email});
   Data.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     email = json['email'];
 

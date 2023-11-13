@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 class AddBasicInformationScreen extends StatefulWidget {
-  const AddBasicInformationScreen({super.key});
+  final String? phoneNumner;
+  final String? experience;
+  const AddBasicInformationScreen({super.key, required this.phoneNumner, required this.experience});
 
   @override
   State<AddBasicInformationScreen> createState() => _AddBasicInformationScreenState();
@@ -9,6 +11,12 @@ class AddBasicInformationScreen extends StatefulWidget {
 class _AddBasicInformationScreenState extends State<AddBasicInformationScreen> {
   final phoneNumberController = TextEditingController();
   final experienceController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    phoneNumberController.text = widget.phoneNumner!;
+    experienceController.text = widget.experience!;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

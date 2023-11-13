@@ -43,6 +43,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       print("responsessss"+ loginResponse.httpStatusCode.toString());
       if(loginResponse.httpStatusCode == 200){
         saveToken(loginResponse.token!);
+        saveUserId(loginResponse.data!.id!);
 
         emit(LoginLoadedSuccessState(loginResponse));
       }
