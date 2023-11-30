@@ -56,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onMapCreated(gm.GoogleMapController controller) {
     mapController = controller;
   }
+  String profileStatus = "Please complete your caregiver profile to accept job.";
+
+  late AnimationController controller;
 
   @override
   void initState() {
@@ -126,10 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                      mainAxisAlignment: MainAxisAlignment.start,
                      children: [
                        IconButton(
-
                          icon: Image.asset('lib/assets/test.png', ),
                          iconSize: 150,
-
                          onPressed: () => exit(0),
                        )
                      ],
@@ -272,7 +273,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             Container(
               margin: EdgeInsets.only(top:15, left:10, right:10, bottom: 30),
               child:  Flex(
@@ -298,7 +298,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+              child: Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7.0),
+                  color: Colors.yellow[700],
+                ),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "lib/assets/medical.png",
+                      height: 170.0,
+                      width: 170.0,
+                    ),
+                    Flexible(child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
+                          SizedBox(height: 10.0,),
+                          LinearProgressIndicator(
+                            value: 20.00,
+                            semanticsLabel: 'Linear progress indicator',
+                          ),
+                        ],
+                      ),
+                    )),
 
+                  ],
+                ),
+              ),
+            ),
             BlocBuilder<JobBloc, JobState>(
               builder: (context, state) {
                 if( state is QuickCallLoadingState){
