@@ -19,7 +19,7 @@ class _DocumentCardState extends State<DocumentCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.only(top:8, right: 5, left: 5, bottom: 8),
       decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(5.0)

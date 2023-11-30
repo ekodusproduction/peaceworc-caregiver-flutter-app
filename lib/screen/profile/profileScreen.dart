@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:peace_worc/api/api_links.dart';
 import 'package:peace_worc/bloc/profile/profile_details_bloc.dart';
 import 'package:peace_worc/components/card/qualification.dart';
 import 'package:peace_worc/model/profile/profile_details_model.dart';
@@ -44,8 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
      return profileWidget(true, profileDetailsResponse);
    }
    if(state is ProfileDetailsSuccessState){
-     print("succccccccccccccccccc");
-
      return profileWidget(false, state.profileDetailsResponse);
    }
    return Center(
@@ -84,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Stack(
                           children:[
                             CachedNetworkImage(
-                              imageUrl:"https://peaceworc-phase2-dev.ekodusproject.tech/${profileDetailsResponse?.data?.basicInfo!.photo}" ??  "https://picsum.photos/250?image=9",
+                              imageUrl:'${ApiLinks.debugUrl}${profileDetailsResponse?.data?.basicInfo!.photo}' ??  "https://picsum.photos/250?image=9",
                               errorWidget: (context, url, error) => const Text("error"),
                               imageBuilder: (context, imageProvider) => Skeleton.shade(
                                 child: CircleAvatar(

@@ -121,7 +121,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => SignUpPage(),
           // Add other routes here
         },
-        home: OptionalRegScreen(), title: 'Peaceworc Caregiver',
+        home: SplashScreen(), title: 'Peaceworc Caregiver',
         debugShowCheckedModeBanner: false,),
     ),
 

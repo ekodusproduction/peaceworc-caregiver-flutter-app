@@ -21,19 +21,20 @@ class _OptionalRegScreenState extends State<OptionalRegScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               DropdownButtonHideUnderline(
                 child: DropdownButton2<String>(
                   isExpanded: true,
                   hint: Text(
-                    'Select Item',
+                    'Select job type',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       color: Theme.of(context).hintColor,
                     ),
                   ),
@@ -43,11 +44,10 @@ class _OptionalRegScreenState extends State<OptionalRegScreen> {
                     child: Text(
                       item,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                       ),
                     ),
-                  ))
-                      .toList(),
+                  )).toList(),
                   value: selectedValue,
                   onChanged: (String? value) {
                     setState(() {
@@ -56,27 +56,33 @@ class _OptionalRegScreenState extends State<OptionalRegScreen> {
                   },
                   buttonStyleData: const ButtonStyleData(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    height: 40,
-                    width: 140,
+                    height: 50,
+                    width: 200,
                   ),
                   menuItemStyleData: const MenuItemStyleData(height: 40,),
                 ),
               ),
-              Divider(height: 1,color: Colors.black),
-              TextFormField(
-                controller: experienceController,
-                style: TextStyle(color: Colors.black),
-                decoration: InputDecoration(
-                  labelText: 'Caregiver experience (years)',
-                  labelStyle: TextStyle(color: Colors.black),
-                  errorMaxLines: 3,
-                ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-              ),
-              Divider(height: 1,color: Colors.black)
             ],
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Divider(height: 1,color: Colors.black),
+          ),
+          SizedBox(height: 10.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: TextFormField(
+              controller: experienceController,
+              style: TextStyle(color: Colors.black),
+              decoration: InputDecoration(
+                labelText: 'Caregiver experience (years)',
+                labelStyle: TextStyle(color: Colors.black),
+                errorMaxLines: 3,
+              ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            ),
+          ),
+        ],
       ),
     );
   }
