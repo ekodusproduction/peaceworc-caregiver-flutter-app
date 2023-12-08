@@ -14,8 +14,8 @@ import 'package:peace_worc/repository/login/login_repository.dart';
 import 'package:peace_worc/screen/chat/chat_screen.dart';
 import 'package:peace_worc/screen/dashboard/Dashboard.dart';
 import 'package:peace_worc/screen/login/login.dart';
-import 'package:peace_worc/screen/profile/basic_info.dart';
-import 'package:peace_worc/screen/profile/profile_registration.dart';
+import 'package:peace_worc/screen/profile_registration/basic_info.dart';
+import 'package:peace_worc/screen/profile_registration/profile_registration.dart';
 import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
 import 'package:peace_worc/screen/signup/signup.dart';
 import 'package:peace_worc/screen/splash/splash.dart';
@@ -121,7 +121,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => SignUpPage(),
           // Add other routes here
         },
-        home: SplashScreen(), title: 'Peaceworc Caregiver',
+        home: ProfileRegistrationScreen(), title: 'Peaceworc Caregiver',
         debugShowCheckedModeBanner: false,),
     ),
 

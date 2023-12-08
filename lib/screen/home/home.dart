@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
-                          SizedBox(height: 10.0,),
+                          SizedBox(height: 10.0),
                           LinearProgressIndicator(
                             value: 20.00,
                             semanticsLabel: 'Linear progress indicator',
@@ -327,7 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     )),
-
                   ],
                 ),
               ),
