@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 class BasicInfoScreen extends StatefulWidget {
   const BasicInfoScreen({super.key});
 
@@ -8,6 +13,10 @@ class BasicInfoScreen extends StatefulWidget {
 }
 
 class _BasicInfoScreenState extends State<BasicInfoScreen> {
+  File? _image;
+  final _picker = ImagePicker();
+  bool isLoading = false;
+
   DateTime selectedDate = DateTime.now();
   final List<String> items = [
     'Select gender',
@@ -29,22 +38,28 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               alignment: AlignmentDirectional.center,
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.grey.withOpacity(0.2),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Icon(Icons.person, color: Colors.black26, size: 45,),
-                  ),
                   radius: 90,
+                  child: _image != null?
+                      CircleAvatar(
+                        radius: 90,
+                        backgroundImage: Image.file(File(_image!.path)).image,
+                      ):
+                      Icon(Icons.person, color: Colors.black26, size: 45,),
                 ),
                 Positioned(
                   top: 0.0,
                   right: 130.0,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Icon(Icons.camera_alt_outlined,
-                          size: 20.0, color: Colors.black),
+                  child: GestureDetector(
+                    onTap: (){
+                      requestPermission();
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(Icons.camera_alt_outlined,
+                            size: 20.0, color: Colors.black),
+                      ),
                     ),
                   ), //Icon
                 ),
@@ -257,5 +272,56 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
       setState(() {
         selectedDate = picked;
       });
+  }
+
+  // Implementing the image picker
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+    await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  void openSettings(){
+    openAppSettings();
+  }
+
+  Future<void> requestPermission() async{
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+      Permission.photos,
+    ].request();
+    if (statuses[Permission.storage]!.isDenied) {
+      // Camera permission is denied
+      print("storage permission denied");
+    }
+    if(statuses[Permission.storage]!.isPermanentlyDenied){
+      print("Permanently Denied");
+      openSettings();
+    }
+    if(statuses[Permission.photos]!.isDenied){
+      print("Permission Denied for photos ${statuses[Permission.photos]!.isGranted}");
+      openSettings();
+    }
+    if(statuses[Permission.photos]!.isPermanentlyDenied){
+      print("Permanently Denied photos");
+      openSettings();
+    }
+    if(Platform.isAndroid){
+      if(statuses[Permission.storage]!.isGranted){
+        print("permission grantedssss ${statuses[Permission.storage]!.isGranted}");
+        _openImagePicker();
+        // openSettings();
+      }
+    }else{
+      if(statuses[Permission.photos]!.isGranted){
+        print("permission granted for photos ${statuses[Permission.photos]!.isGranted}");
+        _openImagePicker();
+        // openSettings();
+      }
+    }
   }
 }

@@ -23,7 +23,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<ProfileDetailsBloc>(context).add(FetchProfileDetailsEvent());
@@ -92,14 +91,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
-
-
                             Positioned(
                               bottom: 0,
                               right: 20,
                               left: 20,
-
-
                               child: Skeleton.shade(
                                 child: Container(
 

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/screen/profile_registration/basic_info.dart';
 import 'package:peace_worc/screen/profile_registration/document_screen.dart';
 import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 import '../../components/document/document_card.dart';
 class ProfileRegistrationScreen extends StatefulWidget {
   const ProfileRegistrationScreen({super.key});
@@ -81,7 +84,6 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
             child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
           );
         },
-
       ),
     );
   }
