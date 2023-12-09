@@ -14,6 +14,7 @@ import 'package:peace_worc/screen/jobs/open_job_detail.dart';
 import 'package:peace_worc/screen/location/location_assist.dart';
 import 'package:peace_worc/screen/location/search_job.dart';
 import 'package:peace_worc/screen/location/search_location.dart';
+import 'package:peace_worc/screen/profile_registration/profile_registration.dart';
 import 'package:peace_worc/screen/settings/strike_screen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -294,40 +295,44 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context) => StrikeScreen(fromMainScreen: true,)));
                   },)),
                   Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Earnings', iconName: Icons.currency_bitcoin, imageName: "medal.png",))
-
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-              child: Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7.0),
-                  color: Colors.yellow[700],
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      "lib/assets/medical.png",
-                      height: 170.0,
-                      width: 170.0,
-                    ),
-                    Flexible(child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
-                          SizedBox(height: 10.0),
-                          LinearProgressIndicator(
-                            value: 20.00,
-                            semanticsLabel: 'Linear progress indicator',
-                          ),
-                        ],
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileRegistrationScreen()));
+                },
+                child: Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7.0),
+                    color: Colors.yellow[700],
+                  ),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "lib/assets/medical.png",
+                        height: 170.0,
+                        width: 170.0,
                       ),
-                    )),
-                  ],
+                      Flexible(child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
+                            SizedBox(height: 10.0),
+                            LinearProgressIndicator(
+                              value: 20.00,
+                              semanticsLabel: 'Linear progress indicator',
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
                 ),
               ),
             ),

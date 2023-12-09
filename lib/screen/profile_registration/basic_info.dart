@@ -4,7 +4,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:peace_worc/screen/location/search_location.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'address_bottomSheet_screen.dart';
 class BasicInfoScreen extends StatefulWidget {
   const BasicInfoScreen({super.key});
 
@@ -29,6 +32,13 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     'Other',
   ];
   String? selectedValue;
+
+  String street = "";
+  String description = "";
+  String place = "";
+  String city = "";
+  String state = "";
+  bool isAddressAvail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +122,6 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                           ],
                         ),
                       ),
-
                     ),
                   ),
                 ),
@@ -164,14 +173,13 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                         ),
                       ),
                     ),
-
                   ),
                 ),
-
               ],
             ),
           ),
           TextFormField(
+            maxLength: 9,
             cursorColor: Colors.black,
             style: TextStyle(
                 color: Colors.black
@@ -180,40 +188,38 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.black),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
-              ),
               labelText: "SSN Number *",
               hintStyle: TextStyle(color: Colors.black, fontSize: 10.0),
               labelStyle: TextStyle(color: Colors.black),
-
-
             ),
-
           ),
           SizedBox(height: 10,),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              color: Colors.grey.withOpacity(0.2),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-
-                  Icon(Icons.search, color: Colors.grey,size: 20,)
-                ],
+          GestureDetector(
+            onTap: (){
+              _navigateToSearchLocation(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: Colors.grey.withOpacity(0.2),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.search, color: Colors.grey,size: 20,),
+                    SizedBox(width: 10,),
+                    Text("Search address here...")
+                  ],
+                ),
               ),
             ),
-
           ),
           SizedBox(height: 20,),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Container(
-
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 color: Colors.grey.withOpacity(0.2),
@@ -321,4 +327,36 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
       }
     }
   }
+
+  Future<void> _navigateToSearchLocation(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchLocationScreen()),
+    ) as Data;
+
+    if (!mounted) return;
+
+    street = result.street!;
+    description = result.description!;
+    place = result.place!;
+    city = result.city!;
+    state = result.state!;
+
+    _navigateToBottomSheet(context, street, city, state);
+  }
+
+  Future<void> _navigateToBottomSheet(BuildContext context, String _street, String _city, String _state) async {
+    final result = await showModalBottomSheet<void>(
+      isScrollControlled: true,
+      useSafeArea: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AddressBottomSheet(street: _street, city: _city, state: _state, zipcode: "12345",);
+      },
+    ) as bool;
+    setState(() {
+      isAddressAvail = result;
+    });
+  }
+
 }
