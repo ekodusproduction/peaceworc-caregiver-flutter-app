@@ -17,7 +17,11 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
   final _picker = ImagePicker();
   bool isLoading = false;
 
+  var mobileController = TextEditingController();
+  var ssnNumberController = TextEditingController();
+
   DateTime selectedDate = DateTime.now();
+  String dob = "Select DOB";
   final List<String> items = [
     'Select gender',
     'Male',
@@ -25,6 +29,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     'Other',
   ];
   String? selectedValue;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -66,29 +71,21 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               ],
             ),
           ),
-          TextField(
-
+          TextFormField(
+            controller: mobileController,
             cursorColor: Colors.black,
-
             style: TextStyle(
-
                 color: Colors.black
             ),
-
             decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.black),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
-              ),
               labelText: "Mobile Number *",
               hintStyle: TextStyle(color: Colors.black, fontSize: 10.0),
               labelStyle: TextStyle(color: Colors.black),
-
-
             ),
-
+            maxLength: 10,
           ),
           Padding(
             padding: const EdgeInsets.only(top:10),
@@ -110,7 +107,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("", style: TextStyle(color: Colors.black),),
+                            Text("${dob}", style: TextStyle(color: Colors.black),),
                             Icon(Icons.calendar_month, color: Colors.black,)
                           ],
                         ),
@@ -174,15 +171,11 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               ],
             ),
           ),
-          TextField(
-
+          TextFormField(
             cursorColor: Colors.black,
-
             style: TextStyle(
-
                 color: Colors.black
             ),
-
             decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.black),
@@ -271,6 +264,10 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
+        var date = DateTime.parse(selectedDate.toString());
+
+        var formattedDate = "${date.month}-${date.day}-${date.year}";
+        dob = formattedDate;
       });
   }
 
