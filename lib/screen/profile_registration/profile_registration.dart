@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/screen/profile_registration/basic_info.dart';
 import 'package:peace_worc/screen/profile_registration/document_screen.dart';
@@ -17,11 +18,13 @@ class ProfileRegistrationScreen extends StatefulWidget {
 class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
 
   int _currentStep = 0;
+  bool isLast = false;
 
   continueStep(){
     if(_currentStep < 2){
       setState(() {
         _currentStep = _currentStep + 1;
+        isLast = _currentStep == 2;
       });
     }
   }
@@ -71,18 +74,50 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
         steps: stepList(),
 
         controlsBuilder: (BuildContext context, ControlsDetails details) {
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 1,
-                backgroundColor: Colors.grey.shade300,
-                minimumSize: const Size.fromHeight(60),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0)
-                )
-            ),
-            onPressed: continueStep,
-            child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
-          );
+          if(isLast == false){
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  elevation: 1,
+                  backgroundColor: Colors.grey.shade300,
+                  minimumSize: const Size.fromHeight(60),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0)
+                  )
+              ),
+              onPressed: (){
+                if(BasicInfoScreenState.checkValidation().isEmpty){
+                  continueStep();
+                }else{
+                  Fluttertoast.showToast(
+                      msg: BasicInfoScreenState.checkValidation(),
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                }
+              },
+              child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(5)
+                ),
+                child: TextButton(
+                  onPressed: (){
+                    //JobPreviewScreenState.createJob();
+                  },
+                  child: const Text('Save', style: TextStyle(color: Colors.white),),
+                ),
+              ),
+            );
+          }
         },
       ),
     );

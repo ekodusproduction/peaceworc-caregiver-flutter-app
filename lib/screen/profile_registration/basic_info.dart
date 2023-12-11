@@ -7,16 +7,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/screen/location/search_location.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../utils/validator.dart';
 import 'address_bottomSheet_screen.dart';
 class BasicInfoScreen extends StatefulWidget {
   const BasicInfoScreen({super.key});
 
   @override
-  State<BasicInfoScreen> createState() => _BasicInfoScreenState();
+  State<BasicInfoScreen> createState() => BasicInfoScreenState();
 }
 
-class _BasicInfoScreenState extends State<BasicInfoScreen> {
-  File? _image;
+class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidationMixin {
+  static File? _image;
   final _picker = ImagePicker();
   bool isLoading = false;
 
@@ -24,7 +25,7 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
   var ssnNumberController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
-  String dob = "Select DOB";
+  static String dob = "Select DOB";
   final List<String> items = [
     'Select gender',
     'Male',
@@ -33,12 +34,43 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
   ];
   String? selectedValue;
 
-  String street = "";
-  String description = "";
-  String place = "";
-  String city = "";
-  String state = "";
+  static String street = "";
+  static String description = "";
+  static String place = "";
+  static String city = "";
+  static String state = "";
   bool isAddressAvail = false;
+  static var mobileNumberTxt = "";
+  static var ssnNumberTxt = "";
+  static var gender = "";
+
+  static String checkValidation(){
+    if(_image != null){
+      if(!mobileNumberTxt.isEmpty){
+        if(!dob.isEmpty){
+          if(!gender.isEmpty){
+            if(!ssnNumberTxt.isEmpty){
+              if(street.isNotEmpty && street != null){
+                return "";
+              }else{
+                return 'Address is required.';
+              }
+            }else{
+              return "Please select a ssn number";
+            }
+          }else{
+            return "Please select a gender";
+          }
+        }else{
+          return "Please select a DOB";
+        }
+      }else{
+        return "Please provide mobile number";
+      }
+    }else{
+      return "Please select a profile picture";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +115,9 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
           ),
           TextFormField(
             controller: mobileController,
+            onChanged: (content){
+              mobileNumberTxt = content;
+            },
             cursorColor: Colors.black,
             style: TextStyle(
                 color: Colors.black
@@ -96,6 +131,14 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               labelStyle: TextStyle(color: Colors.black),
             ),
             maxLength: 10,
+            keyboardType: TextInputType.number,
+            validator: (String? value) {
+              if(isNumberValid(value!).length != 0){
+                return isNumberValid(value!);
+              }
+              return null;
+            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           Padding(
             padding: const EdgeInsets.only(top:10),
@@ -179,7 +222,10 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
             ),
           ),
           TextFormField(
-            maxLength: 9,
+            controller: ssnNumberController,
+            onChanged: (content){
+              ssnNumberTxt = content;
+            },
             cursorColor: Colors.black,
             style: TextStyle(
                 color: Colors.black
@@ -192,6 +238,15 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               hintStyle: TextStyle(color: Colors.black, fontSize: 10.0),
               labelStyle: TextStyle(color: Colors.black),
             ),
+            maxLength: 9,
+            keyboardType: TextInputType.number,
+            validator: (String? value) {
+              if(isSsnValid(value!).length != 0){
+                return isSsnValid(value!);
+              }
+              return null;
+            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           SizedBox(height: 10,),
           GestureDetector(
@@ -217,44 +272,35 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
             ),
           ),
           SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
+          Visibility(
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                color: Colors.grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[300],
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Guwahati", style: TextStyle(color: Colors.black, fontSize: 14),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Ffb Business Center 5587, West", style: TextStyle(color: Colors.grey, fontSize: 14),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Divider(height: 4,color: Colors.black,),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Street name/number", style: TextStyle(color: Colors.grey, fontSize: 14),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Apartment name/number", style: TextStyle(color: Colors.grey, fontSize: 14),),
-                  ),
-
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(place, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),),
+                    Text(description, style: TextStyle(fontSize: 13, color: Colors.grey[800]),),
+                    Divider(
+                      thickness: 0.5,
+                      color: Colors.grey[600],
+                    ),
+                    Text("Street name/number:", style: TextStyle(fontSize: 13, color: Colors.grey[800]),),
+                    Text(street, style: TextStyle(fontSize: 13, color: Colors.black, fontWeight: FontWeight.bold),),
+                    SizedBox(height: 4,),
+                    Text("Apartment name/number:", style: TextStyle(fontSize: 13, color: Colors.grey[800]),),
+                    Text("", style: TextStyle(fontSize: 13, color: Colors.grey[800]),),
+                    SizedBox(height: 4),
+                  ],
+                ),
               ),
-
             ),
-          )
+            visible: isAddressAvail,
+          ),
         ],
       ),
     );
