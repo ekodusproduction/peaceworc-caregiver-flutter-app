@@ -86,10 +86,7 @@ class MyApp extends StatelessWidget {
 
             BlocProvider(
               create: (context) =>
-                  ProfileDetailsBloc(
-
-                  ),
-
+                  ProfileDetailsBloc(),
             ),
 
             BlocProvider(

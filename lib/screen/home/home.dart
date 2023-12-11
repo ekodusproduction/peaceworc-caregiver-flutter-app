@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:peace_worc/bloc/job/job_bloc.dart';
+import 'package:peace_worc/bloc/profile/new_get_profile_bloc.dart';
 import 'package:peace_worc/components/card/job_card_item.dart';
 import 'package:peace_worc/components/card/quick_call.dart';
 import 'package:peace_worc/components/card/quick_call_test_card.dart';
@@ -18,8 +19,10 @@ import 'package:peace_worc/screen/profile_registration/profile_registration.dart
 import 'package:peace_worc/screen/settings/strike_screen.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../bloc/profile/profile_details_bloc.dart';
 import '../../components/card/highlight_card.dart';
 import '../../model/job/bid_job_response.dart';
+import '../../model/profile/profile_details_model.dart';
 import '../jobs/job_detail.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 import 'package:vector_math/vector_math.dart'as vm;
@@ -60,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String profileStatus = "Please complete your caregiver profile to accept job.";
 
   late AnimationController controller;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -72,7 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
     });
+    getProfileBloc.getProfile();
+    getProfileListener();
   }
+
 
   @override
   void didChangeDependencies() {
@@ -103,6 +110,34 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  void getProfileListener() {
+    setState(() {
+      isLoading = true;
+    });
+    getProfileBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          //profileStatusValue = value.data!.profileCompletionStatus!.isBasicInfoAdded!.toInt();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -411,10 +446,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },);
               },
             )   ,         //const SizedBox(height: 10.0,),
-
-
-
-
           ],
         ),
       ),

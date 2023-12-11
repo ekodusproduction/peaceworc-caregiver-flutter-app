@@ -23,10 +23,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<ProfileDetailsBloc>(context).add(FetchProfileDetailsEvent());
     });
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

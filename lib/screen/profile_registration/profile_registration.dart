@@ -85,19 +85,23 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
                   )
               ),
               onPressed: (){
-                if(BasicInfoScreenState.checkValidation().isEmpty){
-                  BasicInfoScreenState.clearData();
+                if(_currentStep == 0){
+                  if(BasicInfoScreenState.checkValidation().isEmpty){
+                    BasicInfoScreenState.clearData();
+                    continueStep();
+                  }else{
+                    Fluttertoast.showToast(
+                        msg: BasicInfoScreenState.checkValidation(),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  }
+                }else if(_currentStep == 1){
                   continueStep();
-                }else{
-                  Fluttertoast.showToast(
-                      msg: BasicInfoScreenState.checkValidation(),
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.black,
-                      textColor: Colors.white,
-                      fontSize: 16.0
-                  );
                 }
               },
               child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
@@ -113,6 +117,7 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
                 child: TextButton(
                   onPressed: (){
                     //JobPreviewScreenState.createJob();
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Save', style: TextStyle(color: Colors.white),),
                 ),

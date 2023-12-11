@@ -1,6 +1,8 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/profile/profile_details_bloc.dart';
 import '../../components/my_textfield.dart';
 
 class OptionalRegScreen extends StatefulWidget {
@@ -79,6 +81,8 @@ class _OptionalRegScreenState extends State<OptionalRegScreen> {
                 labelStyle: TextStyle(color: Colors.black),
                 errorMaxLines: 3,
               ),
+              keyboardType: TextInputType.number,
+              maxLength: 2,
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
           ),
