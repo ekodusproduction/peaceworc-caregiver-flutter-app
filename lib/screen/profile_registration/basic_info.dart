@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/screen/location/search_location.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,7 +24,7 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
   var ssnNumberController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
-  static String dob = "Select DOB";
+
   final List<String> items = [
     'Select gender',
     'Male',
@@ -33,21 +32,35 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
     'Other',
   ];
   String? selectedValue;
+  bool isAddressAvail = false;
 
+  static String dob = "Select DOB";
   static String street = "";
   static String description = "";
   static String place = "";
   static String city = "";
   static String state = "";
-  bool isAddressAvail = false;
   static var mobileNumberTxt = "";
   static var ssnNumberTxt = "";
   static var gender = "";
 
+  static void clearData(){
+      dob = "Select DOB";
+      street = "";
+      description = "";
+      place = "";
+      city = "";
+      state = "";
+     mobileNumberTxt = "";
+     ssnNumberTxt = "";
+     gender = "";
+    _image = null;
+  }
+
   static String checkValidation(){
     if(_image != null){
       if(!mobileNumberTxt.isEmpty){
-        if(!dob.isEmpty){
+        if(dob != "Select DOB"){
           if(!gender.isEmpty){
             if(!ssnNumberTxt.isEmpty){
               if(street.isNotEmpty && street != null){
@@ -203,6 +216,7 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
                           onChanged: (String? value) {
                             setState(() {
                               selectedValue = value;
+                              gender = selectedValue!;
                             });
                           },
                           buttonStyleData: const ButtonStyleData(
@@ -405,4 +419,9 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
     });
   }
 
+  @override
+  void dispose() {
+    clearData();
+    super.dispose();
+  }
 }

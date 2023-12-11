@@ -86,6 +86,7 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
               ),
               onPressed: (){
                 if(BasicInfoScreenState.checkValidation().isEmpty){
+                  BasicInfoScreenState.clearData();
                   continueStep();
                 }else{
                   Fluttertoast.showToast(

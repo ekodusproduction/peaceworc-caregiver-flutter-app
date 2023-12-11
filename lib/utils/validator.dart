@@ -21,13 +21,13 @@ mixin AddClientValidationMixin{
     return "";
   }
   String isSsnValid(String number){
-    if(number.length < 10){
+    if(number.length < 9){
       return "SSN number must be a 9 digit number";
-    }
-    if(double.parse(number) == 0.00){
+    }else if(double.parse(number) == 0.00){
       return "Invalid SSN number";
+    }else{
+      return "";
     }
-    return "";
   }
   bool isEmailValidate(String value){
     if(!RegExp(r"^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$")
