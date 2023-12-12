@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 
@@ -9,6 +10,7 @@ import 'package:peace_worc/bloc/profile/new_get_profile_bloc.dart';
 import 'package:peace_worc/components/card/job_card_item.dart';
 import 'package:peace_worc/components/card/quick_call.dart';
 import 'package:peace_worc/components/card/quick_call_test_card.dart';
+import 'package:peace_worc/components/customDialog/profile_completion_dialog.dart';
 import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/screen/jobs/jobs.dart';
 import 'package:peace_worc/screen/jobs/open_job_detail.dart';
@@ -26,6 +28,8 @@ import '../../model/profile/profile_details_model.dart';
 import '../jobs/job_detail.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 import 'package:vector_math/vector_math.dart'as vm;
+
+import '../logout/logout_screen.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -64,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late AnimationController controller;
   bool isLoading = false;
+  bool flag1 = false;
 
   @override
   void initState() {
@@ -76,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
     });
-    getProfileBloc.getProfile();
     getProfileListener();
   }
 
@@ -84,10 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-      print("changedeppendencies");
-    // Check if returning from a detail page and trigger the event
     if (returnedFromDetailPage) {
-      print("enterd here");
       BlocProvider.of<JobBloc>(context).add(FetchQuickCallJobEvent());
       returnedFromDetailPage = false; // Reset the flag
     }
@@ -121,10 +122,22 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       if(value.error == null){
         if (value.success == true) {
-          //profileStatusValue = value.data!.profileCompletionStatus!.isBasicInfoAdded!.toInt();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value.message.toString()),
-          ));
+          if(flag1 == true){
+            if(value.data?.profileCompletionStatus?.isBasicInfoAdded == 0){
+              _showAlertDialog("Please add your basic details to complete your profile","Complete now", 0);
+            }
+            else if(value.data?.profileCompletionStatus?.isDocumentsUploaded == 0){
+
+              if(value.data?.profileCompletionStatus?.isOptionalInfoAdded == 0){
+                _showAlertDialog("Please complete your profile","Complete now", 1);
+              }else{
+                _showAlertDialog("Please add your documents to complete your profile","Complete now", 2);
+              }
+            }else if(value.data?.profileCompletionStatus?.isProfileApproved == 0){
+              _showAlertDialog("Your profile is under review. It will take 24 to 48 hours to get the approval.","Ok", 4);
+            }
+          }
+
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value.message.toString()),
@@ -140,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    getProfileBloc.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -336,8 +350,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
               child: GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileRegistrationScreen()));
+                onTap: () async {
+                  await getProfileBloc.getProfile();
+                  setState(() {
+                    flag1 = true;
+                  });
                 },
                 child: Container(
                   height: 200,
@@ -508,33 +525,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   double getBearing(LatLng begin, LatLng end) {
-
     double lat = (begin.latitude - end.latitude).abs();
-
     double lng = (begin.longitude - end.longitude).abs();
 
-
-
     if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
-
       return vm.degrees(atan(lng / lat));
-
     } else if (begin.latitude >= end.latitude && begin.longitude < end.longitude) {
-
       return (90 - vm.degrees(atan(lng / lat))) + 90;
-
     } else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude) {
-
       return vm.degrees(atan(lng / lat)) + 180;
-
     } else if (begin.latitude < end.latitude && begin.longitude >= end.longitude) {
-
       return (90 - vm.degrees(atan(lng / lat))) + 270;
-
     }
-
     return -1;
+  }
 
+  _showAlertDialog(String title, String buttonText, int step) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return ProfileCompletionDialog(
+            title: title,
+            buttonText: buttonText,
+            step: step,
+            onTap: (){
+              setState(() {
+                flag1 = false;
+              });
+              getProfileBloc.dispose();
+              getProfileBloc.subject.close();
+              Navigator.of(context).pop();
+            },
+        );
+      },
+    );
   }
 
 }

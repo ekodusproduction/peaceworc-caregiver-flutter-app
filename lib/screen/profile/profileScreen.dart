@@ -12,6 +12,8 @@ import 'package:peace_worc/screen/profile/add_certificate_screen.dart';
 import 'package:peace_worc/screen/profile/edit_education_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../bloc/profile/new_get_profile_bloc.dart';
+
 class ProfileScreen extends StatefulWidget {
    const ProfileScreen({super.key});
 
@@ -27,6 +29,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       BlocProvider.of<ProfileDetailsBloc>(context).add(FetchProfileDetailsEvent());
     });
     super.initState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {

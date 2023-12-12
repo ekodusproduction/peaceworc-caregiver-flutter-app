@@ -9,7 +9,8 @@ import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart'
 import 'package:permission_handler/permission_handler.dart';
 import '../../components/document/document_card.dart';
 class ProfileRegistrationScreen extends StatefulWidget {
-  const ProfileRegistrationScreen({super.key});
+  final int? step;
+  const ProfileRegistrationScreen({super.key, this.step});
 
   @override
   State<ProfileRegistrationScreen> createState() => _ProfileRegistrationScreenState();
@@ -51,6 +52,15 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
          content: ProfileDocumentScreen()
      )
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _currentStep = widget.step!!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
