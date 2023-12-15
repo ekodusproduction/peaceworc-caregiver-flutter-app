@@ -62,8 +62,7 @@ class _AddCertificateScreenState extends State<AddCertificateScreen>
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 15, right: 20.0, left: 20.0),
+                padding: const EdgeInsets.only(top: 15, right: 20.0, left: 20.0),
                 child: TextFormField(
                   cursorColor: Colors.black,
 
@@ -92,8 +91,6 @@ class _AddCertificateScreenState extends State<AddCertificateScreen>
 
                     hintStyle: const TextStyle(
                         color: Colors.black, fontSize: 10.0),
-
-
                   ),
                   validator: (String? value) {
                     if (value == null || value == '') {

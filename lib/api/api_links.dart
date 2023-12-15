@@ -20,4 +20,6 @@ class ApiLinks{
   static const String fetchQuickCallDetailJobUrl = 'job/quick-call/get?id=';
   static const String changePasswordUrl = 'profile/change-password';
   static const String fetchChatsUrl = 'chatting/get-chats';
+  static const String basicInformation = 'profile/registration/basic-information';
+
 }

@@ -107,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
         appBarElevatation = 0.0;
         appBarColor = Colors.transparent ;
         message = "reach the top";
-        print(message);
       });
     }
   }
@@ -123,21 +122,24 @@ class _HomeScreenState extends State<HomeScreen> {
       if(value.error == null){
         if (value.success == true) {
           if(flag1 == true){
-            if(value.data?.profileCompletionStatus?.isBasicInfoAdded == 0){
+            if(value.data?.profileCompletionStatus != null){
+              if(value.data?.profileCompletionStatus?.isBasicInfoAdded == 0){
+                _showAlertDialog("Please add your basic details to complete your profile","Complete now", 0);
+              }
+              else if(value.data?.profileCompletionStatus?.isDocumentsUploaded == 0){
+
+                if(value.data?.profileCompletionStatus?.isOptionalInfoAdded == 0){
+                  _showAlertDialog("Please complete your profile","Complete now", 1);
+                }else{
+                  _showAlertDialog("Please add your documents to complete your profile","Complete now", 2);
+                }
+              }else if(value.data?.profileCompletionStatus?.isProfileApproved == 0){
+                _showAlertDialog("Your profile is under review. It will take 24 to 48 hours to get the approval.","Ok", 4);
+              }
+            }else{
               _showAlertDialog("Please add your basic details to complete your profile","Complete now", 0);
             }
-            else if(value.data?.profileCompletionStatus?.isDocumentsUploaded == 0){
-
-              if(value.data?.profileCompletionStatus?.isOptionalInfoAdded == 0){
-                _showAlertDialog("Please complete your profile","Complete now", 1);
-              }else{
-                _showAlertDialog("Please add your documents to complete your profile","Complete now", 2);
-              }
-            }else if(value.data?.profileCompletionStatus?.isProfileApproved == 0){
-              _showAlertDialog("Your profile is under review. It will take 24 to 48 hours to get the approval.","Ok", 4);
-            }
           }
-
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value.message.toString()),

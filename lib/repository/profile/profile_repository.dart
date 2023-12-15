@@ -20,8 +20,6 @@ class ProfileRepo{
         'document': await MultipartFile.fromFile(documnet!.path, filename: 'image.jpeg' ),
         'startYear' :startYear,
         'endYear': endYear
-
-
       });
       Response response = await _apiClient!.post(ApiLinks.certificateUploadUrl, data: formData,   options: Options(
         headers: <String, dynamic>{
