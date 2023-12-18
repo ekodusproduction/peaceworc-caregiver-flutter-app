@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:peace_worc/bloc/profile_registration/basic_info_bloc.dart';
 import 'package:peace_worc/screen/location/search_location.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -83,6 +84,58 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
     }else{
       return "Please select a profile picture";
     }
+  }
+
+  void addBasicInfo(File empFace, String empCode){
+    basicInfoBloc.addBasicInfo(
+      empFace,
+      empCode,
+      mobileController.text,
+      dob,
+      gender,
+      ssnNumberController.text,
+      "$street, $place, $state, USA",
+      place,
+      street,
+      city,
+      state,
+      '12345',
+      '',
+      '',
+      'USA',
+    );
+  }
+
+  void addBasicInfoListener() {
+    setState(() {
+      isLoading = true;
+    });
+    basicInfoBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    addBasicInfoListener();
+    super.initState();
   }
 
   @override

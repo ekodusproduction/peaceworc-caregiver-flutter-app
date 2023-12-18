@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,7 +11,8 @@ import '../../model/response/response.dart';
 
 class BasicInfoRepository{
   Future<AddCertificateResponse> insertBasicInfo(
-      XFile? photo,
+      File empFace,
+      String empCode,
       String phone,
       String dob,
       String gender,
@@ -30,7 +33,7 @@ class BasicInfoRepository{
       print(ApiLinks.certificateUploadUrl);
       print("token${getToken()}");
       FormData  formData = FormData.fromMap({
-        'photo': await MultipartFile.fromFile(photo!.path, filename: 'image.jpeg' ),
+        'photo': await MultipartFile.fromFile(empFace.path, filename: empCode),
         'phone': phone,
         'dob' :dob,
         'gender': gender,
