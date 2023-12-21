@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:peace_worc/repository/profile_registration/basic_info_repository.dart';
 import 'package:peace_worc/repository/profile_registration/new_basic_info_repo.dart';
 import 'package:rxdart/rxdart.dart';
 
