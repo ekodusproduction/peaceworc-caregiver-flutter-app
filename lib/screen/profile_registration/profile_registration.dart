@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:peace_worc/bloc/profile_registration/optional_info_bloc.dart';
 import 'package:peace_worc/screen/profile_registration/basic_info.dart';
 import 'package:peace_worc/screen/profile_registration/document_screen.dart';
 import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
@@ -73,6 +74,14 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
       'USA',
     );
   }
+
+  void addOptionalInfo(){
+    optionalInfoBloc.optionalInfo(
+      OptionalRegScreenState.selectedValue,
+      OptionalRegScreenState.experienceTxt,
+    );
+  }
+
   void addBasicInfoListener() {
     basicInfoBloc.subject.stream.listen((value) async {
       setState(() {
@@ -95,9 +104,32 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
     });
   }
 
+  void addOptionalInfoListener() {
+    optionalInfoBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          OptionalRegScreenState.clearData();
+          continueStep();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   void initState() {
     addBasicInfoListener();
+    addOptionalInfoListener();
     super.initState();
     setState(() {
       _currentStep = widget.step!;
@@ -107,6 +139,9 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
   @override
   void dispose() {
     BasicInfoScreenState.clearData();
+    basicInfoBloc.dispose();
+    OptionalRegScreenState.clearData();
+    optionalInfoBloc.dispose();
     super.dispose();
   }
 
@@ -164,7 +199,10 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
                         );
                       }
                     }else if(_currentStep == 1){
-                      continueStep();
+                      setState(() {
+                        isLoading = true;
+                      });
+                      addOptionalInfo();
                     }
                   },
                   child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),

@@ -9,17 +9,23 @@ class OptionalRegScreen extends StatefulWidget {
   const OptionalRegScreen({super.key});
 
   @override
-  State<OptionalRegScreen> createState() => _OptionalRegScreenState();
+  State<OptionalRegScreen> createState() => OptionalRegScreenState();
 }
 
-class _OptionalRegScreenState extends State<OptionalRegScreen> {
+class OptionalRegScreenState extends State<OptionalRegScreen> {
   final experienceController = TextEditingController();
   final List<String> items = [
     'Select job type',
     'Full time',
     'Part time'
   ];
-  String? selectedValue;
+  static String? selectedValue;
+  static var experienceTxt = "";
+
+  static void clearData(){
+    selectedValue = null;
+    experienceTxt = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +81,9 @@ class _OptionalRegScreenState extends State<OptionalRegScreen> {
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: TextFormField(
               controller: experienceController,
+              onChanged: (content){
+                experienceTxt = content;
+              },
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Caregiver experience (years)',

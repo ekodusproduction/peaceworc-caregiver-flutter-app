@@ -40,7 +40,7 @@ class ProfileCompletionDialog extends StatelessWidget {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileRegistrationScreen(step: step,)));
                     }
                   },
-                  child: Text(buttonText!!, style: TextStyle(color: Colors.white),),
+                  child: Text(buttonText!, style: TextStyle(color: Colors.white)),
                 ),
             ),
         )

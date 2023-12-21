@@ -21,5 +21,6 @@ class ApiLinks{
   static const String changePasswordUrl = 'profile/change-password';
   static const String fetchChatsUrl = 'chatting/get-chats';
   static const String basicInformation = 'profile/registration/basic-information';
+  static const String optionalInformation = 'profile/registration/optional-information';
 
 }
