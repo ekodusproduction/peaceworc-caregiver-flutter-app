@@ -7,6 +7,7 @@ import 'package:peace_worc/screen/profile_registration/basic_info.dart';
 import 'package:peace_worc/screen/profile_registration/document_screen.dart';
 import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../bloc/profile_registration/basic_info_bloc.dart';
 import '../../components/document/document_card.dart';
 class ProfileRegistrationScreen extends StatefulWidget {
   final int? step;
@@ -17,7 +18,7 @@ class ProfileRegistrationScreen extends StatefulWidget {
 }
 
 class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
-
+  bool isLoading = false;
   int _currentStep = 0;
   bool isLast = false;
 
@@ -53,12 +54,60 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
      )
   ];
 
+  void addBasicInfo(){
+    basicInfoBloc.addBasicInfo(
+      BasicInfoScreenState.empFace!,
+      BasicInfoScreenState.empCode,
+      BasicInfoScreenState.mobileNumberTxt,
+      BasicInfoScreenState.dob,
+      BasicInfoScreenState.gender,
+      BasicInfoScreenState.ssnNumberTxt,
+      "${BasicInfoScreenState.street}, ${BasicInfoScreenState.place}, ${BasicInfoScreenState.city}, ${BasicInfoScreenState.state}, USA",
+      BasicInfoScreenState.place,
+      BasicInfoScreenState.street,
+      BasicInfoScreenState.city,
+      BasicInfoScreenState.state,
+      '12345',
+      '',
+      '',
+      'USA',
+    );
+  }
+  void addBasicInfoListener() {
+    basicInfoBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          BasicInfoScreenState.clearData();
+          continueStep();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   void initState() {
+    addBasicInfoListener();
     super.initState();
     setState(() {
-      _currentStep = widget.step!!;
+      _currentStep = widget.step!;
     });
+  }
+
+  @override
+  void dispose() {
+    BasicInfoScreenState.clearData();
+    super.dispose();
   }
 
   @override
@@ -76,66 +125,76 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
         centerTitle: true,
         title: Text("Profile Registration", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),)
       ),
-      body:Stepper(
-        elevation: 0,
-        type: StepperType.horizontal,
-        currentStep:_currentStep ,
-        onStepContinue: continueStep,
-        steps: stepList(),
+      body:Stack(
+        children: [
+          Stepper(
+            elevation: 0,
+            type: StepperType.horizontal,
+            currentStep:_currentStep ,
+            onStepContinue: continueStep,
+            steps: stepList(),
 
-        controlsBuilder: (BuildContext context, ControlsDetails details) {
-          if(isLast == false){
-            return ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  elevation: 1,
-                  backgroundColor: Colors.grey.shade300,
-                  minimumSize: const Size.fromHeight(60),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0)
-                  )
-              ),
-              onPressed: (){
-                if(_currentStep == 0){
-                  if(BasicInfoScreenState.checkValidation().isEmpty){
-                    BasicInfoScreenState.clearData();
-                    continueStep();
-                  }else{
-                    Fluttertoast.showToast(
-                        msg: BasicInfoScreenState.checkValidation(),
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                  }
-                }else if(_currentStep == 1){
-                  continueStep();
-                }
-              },
-              child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
-            );
-          }else{
-            return Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(5)
-                ),
-                child: TextButton(
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
+              if(isLast == false){
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 1,
+                      backgroundColor: Colors.grey.shade300,
+                      minimumSize: const Size.fromHeight(60),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0)
+                      )
+                  ),
                   onPressed: (){
-                    //JobPreviewScreenState.createJob();
-                    Navigator.of(context).pop();
+                    if(_currentStep == 0){
+                      if(BasicInfoScreenState.checkValidation().isEmpty){
+                        setState(() {
+                          isLoading = true;
+                        });
+                        addBasicInfo();
+                      }else{
+                        Fluttertoast.showToast(
+                            msg: BasicInfoScreenState.checkValidation(),
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      }
+                    }else if(_currentStep == 1){
+                      continueStep();
+                    }
                   },
-                  child: const Text('Save', style: TextStyle(color: Colors.white),),
-                ),
-              ),
-            );
-          }
-        },
+                  child: const Text('Next Step >', style: TextStyle(color: Color.fromRGBO(0, 60, 129, 1), fontWeight: FontWeight.bold),),
+                );
+              }else{
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: TextButton(
+                      onPressed: (){
+                        //JobPreviewScreenState.createJob();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Save', style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          Visibility(
+            visible: isLoading,
+              child: Center(child: CircularProgressIndicator(color: Colors.blue.shade800,)))
+        ]
       ),
     );
   }
 }
+

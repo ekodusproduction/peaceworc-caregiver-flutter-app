@@ -44,6 +44,8 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
   static var mobileNumberTxt = "";
   static var ssnNumberTxt = "";
   static var gender = "";
+  static File? empFace = null;
+  static var empCode = "";
 
   static void clearData(){
       dob = "Select DOB";
@@ -56,6 +58,8 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
      ssnNumberTxt = "";
      gender = "";
     _image = null;
+    empFace = null;
+    empCode = '';
   }
 
   static String checkValidation(){
@@ -65,6 +69,8 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
           if(!gender.isEmpty){
             if(!ssnNumberTxt.isEmpty){
               if(street.isNotEmpty && street != null){
+                empFace = _image;
+                empCode = _image!.path.split('/').last;
                 return "";
               }else{
                 return 'Address is required.';
@@ -106,35 +112,8 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
     );
   }
 
-  void addBasicInfoListener() {
-    setState(() {
-      isLoading = true;
-    });
-    basicInfoBloc.subject.stream.listen((value) async {
-      setState(() {
-        isLoading = false;
-      });
-      if(value.error == null){
-        if (value.success == true) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value.message.toString()),
-          ));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value.message.toString()),
-          ));
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(value.error.toString()),
-        ));
-      }
-    });
-  }
-
   @override
   void initState() {
-    addBasicInfoListener();
     super.initState();
   }
 
@@ -384,8 +363,20 @@ class BasicInfoScreenState extends State<BasicInfoScreen> with AddClientValidati
       setState(() {
         selectedDate = picked;
         var date = DateTime.parse(selectedDate.toString());
-
-        var formattedDate = "${date.month}-${date.day}-${date.year}";
+        var formattedDate = '';
+        if(date.month < 10){
+          if(date.day < 10){
+            formattedDate = "0${date.month}-0${date.day}-${date.year}";
+          }else{
+            formattedDate = "0${date.month}-${date.day}-${date.year}";
+          }
+        }else{
+          if(date.day < 10){
+            formattedDate = "${date.month}-0${date.day}-${date.year}";
+          }else{
+            formattedDate = "${date.month}-${date.day}-${date.year}";
+          }
+        }
         dob = formattedDate;
       });
   }

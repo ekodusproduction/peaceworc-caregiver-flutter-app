@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:peace_worc/api/token_interceptor.dart';
 import 'package:peace_worc/hive/hive_init.dart';
 import 'package:peace_worc/model/login/login.dart';
 import 'api_links.dart';
@@ -14,7 +15,7 @@ class ApiClient{
       // _dio.interceptors.add(TokenInterceptor(dio: _dio));
       _dio!.interceptors.add(LogInterceptor(responseBody: true));
 
-        _dio!.options = BaseOptions(contentType: 'application/json', baseUrl: ApiLinks.baseUrl, sendTimeout: 100);
+        _dio!.options = BaseOptions(contentType: 'application/json', baseUrl: ApiLinks.baseUrl, sendTimeout: 5000);
 
         _dio!.interceptors.add(InterceptorsWrapper(
             onRequest: (RequestOptions requestOptions, RequestInterceptorHandler handler) {
@@ -70,10 +71,22 @@ class ApiClient{
               } else
                 handler.reject(err);
             }));
-
-
     }
     //print('Has instance');
+    return _dio;
+  }
+
+
+  static Dio? httpMultipartWithToken() {
+    if (_dio == null) {
+      _dio = new Dio();
+      _dio!.options.baseUrl = ApiLinks.baseUrl;
+      _dio!.options.connectTimeout = 5000;
+      _dio!.options.receiveTimeout = 3000;
+      _dio!.options.sendTimeout = 5000;
+      _dio!.interceptors.add(MultipartTokenInterceptor());
+      _dio!.interceptors.add(LogInterceptor(responseBody: true));
+    }
     return _dio;
   }
 
