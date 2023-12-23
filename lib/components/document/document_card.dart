@@ -76,7 +76,6 @@ class _DocumentCardState extends State<DocumentCard> {
       ),
     );
   }
-// This is the image picker
 
   // Implementing the image picker
   Future<void> _openImagePicker() async {

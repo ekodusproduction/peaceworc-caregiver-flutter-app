@@ -6,7 +6,7 @@ import 'package:peace_worc/constants/settings/setting_constant.dart';
 import 'package:peace_worc/screen/changePassword/change_password.dart';
 import 'package:peace_worc/screen/login/login.dart';
 import 'package:peace_worc/screen/logout/logout_screen.dart';
-import 'package:peace_worc/screen/settings/document_upload.dart';
+import 'package:peace_worc/screen/settings/document_upload_screen.dart';
 import 'package:peace_worc/screen/settings/flag_screen.dart';
 import 'package:peace_worc/screen/settings/strike_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';

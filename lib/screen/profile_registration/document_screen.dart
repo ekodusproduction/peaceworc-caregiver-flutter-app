@@ -60,4 +60,9 @@ class _ProfileDocumentScreenState extends State<ProfileDocumentScreen> {
       ] ,
     );
   }
+  @override
+  void dispose() {
+    getDocumentBloc.dispose();
+    super.dispose();
+  }
 }
