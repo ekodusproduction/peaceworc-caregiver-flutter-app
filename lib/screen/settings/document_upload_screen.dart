@@ -1,7 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:peace_worc/components/document/child_abuse_card.dart';
+import 'package:peace_worc/components/document/covid_card.dart';
+import 'package:peace_worc/components/document/criminal_card.dart';
 import 'package:peace_worc/components/document/document_card.dart';
+import 'package:peace_worc/components/document/driving_card.dart';
+import 'package:peace_worc/components/document/employment_card.dart';
+import 'package:peace_worc/components/document/identification_card.dart';
+import 'package:peace_worc/components/document/tubeculosis_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../bloc/profile_registration/get_document_bloc.dart';
@@ -59,13 +66,18 @@ class _DocumentUploadState extends State<DocumentUpload> {
         title: const Text("Document management", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),),
         centerTitle: true,
         elevation: 0,
-
       ),
-      body: ListView.builder(
-          itemCount: documentName.length,
-          itemBuilder: (BuildContext context, int index){
-          return DocumentCard(documentName: documentName[index]);
-      }),
+      body: ListView(
+        children: [
+          TuberculosisCard(),
+          CovidCard(),
+          CriminalCard(),
+          ChildAbuseCard(),
+          EmploymentCard(),
+          DrivingCard(),
+          IdentificationCard()
+        ],
+      ),
     );
   }
 
