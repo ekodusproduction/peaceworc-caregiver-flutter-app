@@ -27,7 +27,7 @@ class _CriminalCardState extends State<CriminalCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text( "Tuberculosis Test Result", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),)
+                Text( "Criminal Background Result", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),)
               ],
             ),
           ),

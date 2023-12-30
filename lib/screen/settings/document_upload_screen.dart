@@ -12,6 +12,7 @@ import 'package:peace_worc/components/document/tubeculosis_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../bloc/profile_registration/get_document_bloc.dart';
+import '../../model/doc_upload/doc_upload_response.dart';
 class DocumentUpload extends StatefulWidget {
   const DocumentUpload({super.key});
 
@@ -24,23 +25,28 @@ class _DocumentUploadState extends State<DocumentUpload> {
   List<String> documentName = ["Tuberculosis Test Result","Covid- 19 Vaccination Card",
     "Criminal Background Result","Child Abuse Clearance",
     "Employment Eligibility Verification Form(i-9 Form)", "Driving License", "2 - forms of id"];
+  List<Tuberculosis>? tuberculosisList;
 
   @override
   void initState() {
+    isLoading = true;
     getDocumentBloc.getDocument();
     getDocumentListener();
     super.initState();
   }
   void getDocumentListener() {
     getDocumentBloc.subject.stream.listen((value) async {
-      setState(() {
-        isLoading = false;
-      });
       if(value.error == null){
         if (value.success == true) {
+          setState(() {
+            tuberculosisList = value.data?.tuberculosis;
+          });
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value.message.toString()),
           ));
+          setState(() {
+            isLoading = false;
+          });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value.message.toString()),
@@ -67,9 +73,9 @@ class _DocumentUploadState extends State<DocumentUpload> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: ListView(
+      body: isLoading ? Center(child: Text("Loading..."),) : ListView(
         children: [
-          TuberculosisCard(),
+          TuberculosisCard(docs: tuberculosisList),
           CovidCard(),
           CriminalCard(),
           ChildAbuseCard(),
