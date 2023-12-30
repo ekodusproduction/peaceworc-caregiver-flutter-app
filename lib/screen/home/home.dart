@@ -67,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String profileStatus = "Please complete your caregiver profile to accept job.";
 
   late AnimationController controller;
+  bool isLoading2 = false;
   bool isLoading = false;
   bool flag1 = false;
 
@@ -112,12 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getProfileListener() {
-    setState(() {
-      isLoading = true;
-    });
     getProfileBloc.subject.stream.listen((value) async {
       setState(() {
-        isLoading = false;
+        isLoading2 = false;
       });
       if(value.error == null){
         if (value.success == true) {
@@ -197,283 +195,290 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body:  NestedScrollView(
-        physics: BouncingScrollPhysics(),
-      controller: _scrollController,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverAppBar(
-            title: null,
-            elevation: 0,
-            expandedHeight: 340.0,
-            floating: false,
-            pinned: true,
-           collapsedHeight: 60,
-            backgroundColor: Colors.transparent,
+      body:  Stack(
+        children: [
+          NestedScrollView(
+              physics: BouncingScrollPhysics(),
+              controller: _scrollController,
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    title: null,
+                    elevation: 0,
+                    expandedHeight: 340.0,
+                    floating: false,
+                    pinned: true,
+                    collapsedHeight: 60,
+                    backgroundColor: Colors.transparent,
 
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints){
-                return FlexibleSpaceBar(
-                  title:null,
-                  titlePadding: EdgeInsets.zero,
-                  background: Stack(
-                    children: [
-                      Flex(
-                        direction: Axis.vertical,
-                        children:[
-                          Expanded(
-                            child: gm.GoogleMap(
-                              myLocationEnabled: true,
-                              zoomControlsEnabled: true,
-                              zoomGesturesEnabled: true,
-                              onMapCreated: _onMapCreated,
-                              initialCameraPosition: gm.CameraPosition(
+                    flexibleSpace: LayoutBuilder(
+                        builder: (context, constraints){
+                          return FlexibleSpaceBar(
+                            title:null,
+                            titlePadding: EdgeInsets.zero,
+                            background: Stack(
+                              children: [
+                                Flex(
+                                  direction: Axis.vertical,
+                                  children:[
+                                    Expanded(
+                                      child: gm.GoogleMap(
+                                        myLocationEnabled: true,
+                                        zoomControlsEnabled: true,
+                                        zoomGesturesEnabled: true,
+                                        onMapCreated: _onMapCreated,
+                                        initialCameraPosition: gm.CameraPosition(
 
-                                target: _center,
-                                zoom: 11.0,
-                              ),
-                              markers: marker,
-                            ),
-                          )
-                        ] ,
-                      ),
-                      Positioned(
-                          top:95,
-                          left: 15,
-                          right: 15,
-                          child: Material(
-                            elevation: 10.0,
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Container(
-
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.white,
-
-                              ),
-
-
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    InkWell(
-                                        onTap: (){
-                                          showDialog<String>(
-                                            context: context,
-                                            builder: (BuildContext context) => Dialog.fullscreen(
-                                              insetAnimationCurve: Curves.easeInOut,
-                                              child: SearchJobScreen(),
-                                            ),
-                                          );
-                                        },
-                                        child: Icon(Icons.search, size: 30, color: Colors.grey[400],)),
-                                    InkWell(
-                                      onTap: () async {
-                                        var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchLocationScreen())) as LocationModel?;
-                                        if(!mounted) return;
-                                        if(result != null){
-                                          print("home page => ${result.lat}");
-                                          final double bearing = getBearing(gm.LatLng(45.521563, -122.677433), gm.LatLng(result.lat, result.long));
-                                          mapController.animateCamera(gm.CameraUpdate.newCameraPosition(gm.CameraPosition(target: gm.LatLng(result.lat, result.long), zoom: 14)));
-                                          marker.clear();
-                                          marker.add(gm.Marker(markerId: const gm.MarkerId('currentLocation'), position: gm.LatLng(result.lat, result.long), flat: true,
-
-                                              rotation: bearing,
-
-                                              draggable: false));
-                                          saveLocation(result.locality);
-                                          setState(() {
-                                            locality = result.locality!;
-
-                                          });
-                                        }
-                                      },
+                                          target: _center,
+                                          zoom: 11.0,
+                                        ),
+                                        markers: marker,
+                                      ),
+                                    )
+                                  ] ,
+                                ),
+                                Positioned(
+                                    top:95,
+                                    left: 15,
+                                    right: 15,
+                                    child: Material(
+                                      elevation: 10.0,
+                                      borderRadius: BorderRadius.circular(10.0),
                                       child: Container(
 
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(7.0),
-                                          color: Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          color: Colors.white,
+
                                         ),
+
+
                                         child: Padding(
-                                          padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
+                                          padding: const EdgeInsets.all(10.0),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Icon(Icons.location_on_outlined, size: 18,),
-                                              Text(locality, style: TextStyle(color: Colors.black, fontSize: 12),)
+                                              InkWell(
+                                                  onTap: (){
+                                                    showDialog<String>(
+                                                      context: context,
+                                                      builder: (BuildContext context) => Dialog.fullscreen(
+                                                        insetAnimationCurve: Curves.easeInOut,
+                                                        child: SearchJobScreen(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Icon(Icons.search, size: 30, color: Colors.grey[400],)),
+                                              InkWell(
+                                                onTap: () async {
+                                                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchLocationScreen())) as LocationModel?;
+                                                  if(!mounted) return;
+                                                  if(result != null){
+                                                    print("home page => ${result.lat}");
+                                                    final double bearing = getBearing(gm.LatLng(45.521563, -122.677433), gm.LatLng(result.lat, result.long));
+                                                    mapController.animateCamera(gm.CameraUpdate.newCameraPosition(gm.CameraPosition(target: gm.LatLng(result.lat, result.long), zoom: 14)));
+                                                    marker.clear();
+                                                    marker.add(gm.Marker(markerId: const gm.MarkerId('currentLocation'), position: gm.LatLng(result.lat, result.long), flat: true,
+
+                                                        rotation: bearing,
+
+                                                        draggable: false));
+                                                    saveLocation(result.locality);
+                                                    setState(() {
+                                                      locality = result.locality!;
+
+                                                    });
+                                                  }
+                                                },
+                                                child: Container(
+
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(7.0),
+                                                    color: Colors.grey[200],
+                                                  ),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(top:5, left: 10, right: 10, bottom: 5),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: [
+                                                        Icon(Icons.location_on_outlined, size: 18,),
+                                                        Text(locality, style: TextStyle(color: Colors.black, fontSize: 12),)
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
                                             ],
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ))
+                              ],
+                            ),
+                          );
+                        }
+
+                    ),
+                  ),
+                ];
+              },
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top:15, left:10, right:10, bottom: 30),
+                      child:  Flex(
+                        direction: Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Jobs', iconName: Icons.work, imageName: "case.png", onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JobsScreen()));
+                          },)),
+                          Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Rewards', iconName: Icons.currency_bitcoin, imageName: "earnings.png",)),
+                          Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Strikes', iconName: Icons.handshake, imageName: "ad-block.png",  onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => StrikeScreen(fromMainScreen: true,)));
+                          },)),
+                          Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Earnings', iconName: Icons.currency_bitcoin, imageName: "medal.png",))
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isLoading2 = true;
+                          });
+                          await getProfileBloc.getProfile();
+                          setState(() {
+                            flag1 = true;
+                          });
+                        },
+                        child: Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(7.0),
+                            color: Colors.yellow[700],
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "lib/assets/medical.png",
+                                height: 170.0,
+                                width: 170.0,
+                              ),
+                              Flexible(child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
+                                    SizedBox(height: 10.0),
+                                    LinearProgressIndicator(
+                                      value: 20.00,
+                                      semanticsLabel: 'Linear progress indicator',
+                                    ),
                                   ],
                                 ),
-                              ),
-                            ),
-                          ))
-                    ],
-                  ),
-                );
-        }
-
-            ),
-          ),
-        ];
-      },
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top:15, left:10, right:10, bottom: 30),
-              child:  Flex(
-                direction: Axis.horizontal,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Jobs', iconName: Icons.work, imageName: "case.png", onTap: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => JobsScreen()));
-                  },)),
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Rewards', iconName: Icons.currency_bitcoin, imageName: "earnings.png",)),
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Strikes', iconName: Icons.handshake, imageName: "ad-block.png",  onTap: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => StrikeScreen(fromMainScreen: true,)));
-                  },)),
-                  Expanded(child: HighLightCard(flavorColor: Colors.black, name: 'Earnings', iconName: Icons.currency_bitcoin, imageName: "medal.png",))
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 18.0),
-              child: GestureDetector(
-                onTap: () async {
-                  await getProfileBloc.getProfile();
-                  setState(() {
-                    flag1 = true;
-                  });
-                },
-                child: Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.0),
-                    color: Colors.yellow[700],
-                  ),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        "lib/assets/medical.png",
-                        height: 170.0,
-                        width: 170.0,
+                              )),
+                            ],
+                          ),
+                        ),
                       ),
-                      Flexible(child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    BlocBuilder<JobBloc, JobState>(
+                      builder: (context, state) {
+                        if( state is QuickCallLoadingState){
+                          return Skeletonizer(
+                              child: Column(
+                                children: [
+                                  _quickCallHeader(),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 250,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        return JobCardItem(index: index);
+                                      },
+                                    ),
+                                  )
+                                ],
+                              )
+                          );
+                        }
+                        if(state is QuickCallSuccessState){
+                          print("successState");
+                          // print(state.bidJobResponse.data.)
+                          if(state.bidJobResponse.data!.isEmpty){
+                            return const SizedBox.shrink();
+                          }
+                          return Column(
+                            children: [
+                              _quickCallHeader(),
+                              SizedBox(
+                                  width: double.infinity,
+                                  height: 250,
+                                  child: _listItem(false, state.bidJobResponse)
+
+                              )
+                            ],
+                          );
+
+
+                        }
+                        return SizedBox.shrink();
+
+                      },
+                    ),
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 15.0, bottom: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(child: Text(profileStatus, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black),)),
-                            SizedBox(height: 10.0),
-                            LinearProgressIndicator(
-                              value: 20.00,
-                              semanticsLabel: 'Linear progress indicator',
-                            ),
+                            const Text("Open Jobs", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),),
+                            GestureDetector(child: const Text("See All", style: TextStyle(color: Colors.lightBlueAccent,  fontSize: 13),)
+                            )
                           ],
                         ),
-                      )),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            BlocBuilder<JobBloc, JobState>(
-              builder: (context, state) {
-                if( state is QuickCallLoadingState){
-                  return Skeletonizer(
-                      child: Column(
-                        children: [
-                          _quickCallHeader(),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 250,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return JobCardItem(index: index);
-                              },
-                            ),
-                          )
-                        ],
-                      )
-                  );
-                }
-                if(state is QuickCallSuccessState){
-                  print("successState");
-                 // print(state.bidJobResponse.data.)
-                  if(state.bidJobResponse.data!.isEmpty){
-                    return const SizedBox.shrink();
-                  }
-                  return Column(
-                    children: [
-                      _quickCallHeader(),
-                      SizedBox(
-                          width: double.infinity,
-                          height: 250,
-                          child: _listItem(false, state.bidJobResponse)
+                      ),
+                    ),
 
-                      )
-                    ],
-                  );
-
-
-                }
-                return SizedBox.shrink();
-
-              },
-            ),
-            Container(
-              child: Padding(
-                padding: EdgeInsets.only(right: 10.0, left: 10.0, top: 15.0, bottom: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Open Jobs", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),),
-                    GestureDetector(child: const Text("See All", style: TextStyle(color: Colors.lightBlueAccent,  fontSize: 13),)
-                    )
+                    ListView.builder(
+                      padding: EdgeInsets.zero,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 2,
+                      itemBuilder: (context, index){
+                        return JobCardItem(index: index, onTap: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OpenJobDetailScreen()));
+                        },);
+                      },
+                    )   ,         //const SizedBox(height: 10.0,),
                   ],
                 ),
               ),
-            ),
-
-            ListView.builder(
-              padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-              itemCount: 2,
-              itemBuilder: (context, index){
-                  return JobCardItem(index: index, onTap: (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                OpenJobDetailScreen()));
-                  },);
-              },
-            )   ,         //const SizedBox(height: 10.0,),
-          ],
         ),
+          Visibility(
+            visible: isLoading2,
+              child: Center(child: CircularProgressIndicator())
+          )
+        ]
       ),
-      ),
-
-
-
     );
-
   }
   Widget _listItem(loadingState, BidJobResponse bidJobResponse){
     return Skeletonizer(
@@ -543,9 +548,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _showAlertDialog(String title, String buttonText, int step) {
-    showDialog<void>(
+     showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return ProfileCompletionDialog(
             title: title,

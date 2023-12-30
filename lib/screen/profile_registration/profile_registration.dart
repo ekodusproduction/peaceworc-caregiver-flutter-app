@@ -7,6 +7,7 @@ import 'package:peace_worc/bloc/profile_registration/optional_info_bloc.dart';
 import 'package:peace_worc/screen/profile_registration/basic_info.dart';
 import 'package:peace_worc/screen/profile_registration/document_screen.dart';
 import 'package:peace_worc/screen/profile_registration/optional_reg_screen.dart';
+import 'package:peace_worc/screen/settings/document_upload_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../bloc/profile_registration/basic_info_bloc.dart';
 import '../../components/document/document_card.dart';

@@ -67,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             }, ),
 
             SettingComponent(settingName: Settings.documentManagement, iconName: Icons.audio_file_outlined, onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const DocumentUpload()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const DocumentUpload(isSettinngs: true)));
             },),
             const SettingComponent(settingName: Settings.earnings, iconName: Icons.account_balance_wallet_outlined),
             SettingComponent(settingName:Settings.strikes, iconName: Icons.block, onTap: (){

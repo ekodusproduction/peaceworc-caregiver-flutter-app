@@ -2,8 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:peace_worc/model/doc_upload/doc_upload_response.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../api/api_links.dart';
 class IdentificationCard extends StatefulWidget {
-  const IdentificationCard({super.key});
+  final List<Identification>? docs;
+  const IdentificationCard({super.key, required this.docs});
 
   @override
   State<IdentificationCard> createState() => _IdentificationCardState();
@@ -36,24 +41,34 @@ class _IdentificationCardState extends State<IdentificationCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  child:  _image != null ? Container(
-                    margin: EdgeInsets.only(right: 20),
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5.0)
-                    ),
-                    child: Image.file(File(_image!.path), fit: BoxFit.cover,),
-                  ): null,
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.docs?.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+                            child: Image.network(
+                              ApiLinks.PUBLIC_URL+widget.docs![index].image!,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      }),
                 ),
-
 
                 GestureDetector(
                   onTap: (){
-                    //requestPermission();
-
+                    requestPermission();
                   },
                   child: Container(
                     height: 100,
@@ -71,5 +86,63 @@ class _IdentificationCardState extends State<IdentificationCard> {
         ],
       ),
     );
+  }
+
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+    await _picker.pickImage(source: ImageSource.gallery,);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  void openSettings(){
+    openAppSettings();
+  }
+  Future<void> requestPermission() async{
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+      Permission.photos,
+      Permission.location
+    ].request();
+    if (statuses[Permission.storage]!.isDenied) {
+      // Camera permission is denied
+      print("storage permission denied");
+    }
+    if(statuses[Permission.storage]!.isPermanentlyDenied){
+      print("Permanently Denied");
+      openSettings();
+
+    }
+    if (statuses[Permission.location]!.isDenied) {
+      // Microphone permission is denied
+      print("Location permission denied");
+
+    }
+    if(statuses[Permission.photos]!.isDenied){
+      print("Permission Denied for photos ${statuses[Permission.photos]!.isGranted}");
+      openSettings();
+
+    }
+    if(statuses[Permission.photos]!.isPermanentlyDenied){
+      print("Permanently Denied photos");
+      openSettings();
+
+    }
+    if(Platform.isAndroid){
+      if(statuses[Permission.storage]!.isGranted){
+        print("permission grantedssss ${statuses[Permission.storage]!.isGranted}");
+        _openImagePicker();
+        // openSettings();
+      }
+    }else{
+      if(statuses[Permission.photos]!.isGranted){
+        print("permission granted for photos ${statuses[Permission.photos]!.isGranted}");
+        _openImagePicker();
+        // openSettings();
+      }
+    }
   }
 }

@@ -17,10 +17,6 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
   File? _image;
   final _picker = ImagePicker();
   @override
-  void initState() {
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top:8, right: 5, left: 5, bottom: 8),
@@ -100,7 +96,6 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
       });
     }
   }
-
   void openSettings(){
     openAppSettings();
   }
@@ -147,6 +142,5 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
         // openSettings();
       }
     }
-
   }
 }
