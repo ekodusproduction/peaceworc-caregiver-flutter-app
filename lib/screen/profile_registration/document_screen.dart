@@ -34,7 +34,9 @@ class _ProfileDocumentScreenState extends State<ProfileDocumentScreen> {
 
   @override
   void initState() {
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+    });
     getDocumentBloc.getDocument();
     getDocumentListener();
     super.initState();
@@ -76,19 +78,15 @@ class _ProfileDocumentScreenState extends State<ProfileDocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: isLoading ? ListView(
-        children: [
-          SizedBox(height: 8,),
-          loadingCard(),
-          loadingCard(),
-          loadingCard(),
-          loadingCard(),
-          loadingCard(),
-          loadingCard(),
-          loadingCard()
-        ],
-      ): ListView(
+    return isLoading ? Column(
+      children: [
+        SizedBox(height: 8,),
+        loadingCard(),
+        loadingCard(),
+        loadingCard(),
+        loadingCard(),
+      ],
+    ): Column(
         children: [
           TuberculosisCard(docs: tuberculosisList),
           CovidCard(docs: covidList,),
@@ -98,8 +96,7 @@ class _ProfileDocumentScreenState extends State<ProfileDocumentScreen> {
           DrivingCard(docs: drivingList,),
           IdentificationCard(docs: identificationList,)
         ],
-      ),
-    );
+      );
   }
 
   Shimmer loadingCard(){
