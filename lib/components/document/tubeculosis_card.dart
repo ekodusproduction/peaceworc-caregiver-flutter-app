@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peace_worc/api/api_links.dart';
+import 'package:peace_worc/bloc/profile_registration/upload_doc_bloc.dart';
 import 'package:peace_worc/model/doc_upload/doc_upload_response.dart';
 import 'package:permission_handler/permission_handler.dart';
 class TuberculosisCard extends StatefulWidget {
@@ -16,6 +17,36 @@ class TuberculosisCard extends StatefulWidget {
 class _TuberculosisCardState extends State<TuberculosisCard> {
   File? _image;
   final _picker = ImagePicker();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    addDocUploadListener();
+  }
+  void addDocUploadListener() {
+    uploadDocBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,7 +107,14 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(5)
                     ),
-                    child: Center(child: Icon(Icons.cloud_upload_rounded, size: 40,)),
+                    child:Stack(
+                        children: [
+                          Center(child: Icon(Icons.cloud_upload_rounded, size: 40,)),
+                          Visibility(
+                              visible: isLoading,
+                              child: Center(child: CircularProgressIndicator(color: Colors.blue.shade800,)))
+                        ]
+                    ),
                   ),
                 )
               ],
@@ -89,11 +127,15 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
 
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
-    await _picker.pickImage(source: ImageSource.gallery,);
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
       });
+      setState(() {
+        isLoading = true;
+      });
+      uploadDocBloc.uploadDoc(_image!, _image!.path.split('/').last, 'tuberculosis', "09-09-2065");
     }
   }
   void openSettings(){
@@ -142,5 +184,11 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
         // openSettings();
       }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    uploadDocBloc.dispose();
   }
 }

@@ -13,7 +13,9 @@ import 'package:peace_worc/components/document/tubeculosis_card.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../api/api_client.dart';
 import '../../bloc/profile_registration/get_document_bloc.dart';
+import '../../bloc/profile_registration/upload_doc_bloc.dart';
 import '../../model/doc_upload/doc_upload_response.dart';
 class DocumentUpload extends StatefulWidget {
   final bool? isSettinngs;
@@ -136,6 +138,8 @@ class _DocumentUploadState extends State<DocumentUpload> {
   @override
   void dispose() {
     getDocumentBloc.dispose();
+    uploadDocBloc.dispose();
+    ApiClient.dispose();
     super.dispose();
   }
 }

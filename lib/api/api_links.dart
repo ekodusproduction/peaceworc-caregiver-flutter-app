@@ -23,4 +23,6 @@ class ApiLinks{
   static const String basicInformation = 'profile/registration/basic-information';
   static const String optionalInformation = 'profile/registration/optional-information';
   static const String getDocument = 'document/get';
+  static const String uploadDocument = 'document/upload';
+
 }

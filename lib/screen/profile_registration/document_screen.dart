@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:peace_worc/api/api_client.dart';
 import 'package:peace_worc/bloc/profile_registration/get_document_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../bloc/profile_registration/upload_doc_bloc.dart';
 import '../../components/document/child_abuse_card.dart';
 import '../../components/document/covid_card.dart';
 import '../../components/document/criminal_card.dart';
@@ -119,6 +121,8 @@ class _ProfileDocumentScreenState extends State<ProfileDocumentScreen> {
   @override
   void dispose() {
     getDocumentBloc.dispose();
+    uploadDocBloc.dispose();
+    ApiClient.dispose();
     super.dispose();
   }
 }

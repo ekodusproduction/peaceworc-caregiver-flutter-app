@@ -78,6 +78,7 @@ class ApiClient{
 
 
   static Dio? httpMultipartWithToken() {
+    _dio = null;
     if (_dio == null) {
       _dio = new Dio();
       _dio!.options.baseUrl = ApiLinks.baseUrl;
