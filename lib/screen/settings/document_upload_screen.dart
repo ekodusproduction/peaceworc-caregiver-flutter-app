@@ -107,8 +107,8 @@ class _DocumentUploadState extends State<DocumentUpload> {
         ): ListView(
         children: [
           TuberculosisCard(docs: tuberculosisList),
-          CovidCard(docs: covidList,),
-          CriminalCard(docs: criminalList,),
+          CovidCard(docs: covidList),
+          CriminalCard(docs: criminalList),
           ChildAbuseCard(docs: childAbuseList,),
           EmploymentCard(docs: employmentList,),
           DrivingCard(docs: drivingList,),

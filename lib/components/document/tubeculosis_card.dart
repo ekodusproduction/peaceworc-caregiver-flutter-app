@@ -154,22 +154,18 @@ class _TuberculosisCardState extends State<TuberculosisCard> {
     if(statuses[Permission.storage]!.isPermanentlyDenied){
       print("Permanently Denied");
       openSettings();
-
     }
     if (statuses[Permission.location]!.isDenied) {
       // Microphone permission is denied
       print("Location permission denied");
-
     }
     if(statuses[Permission.photos]!.isDenied){
       print("Permission Denied for photos ${statuses[Permission.photos]!.isGranted}");
       openSettings();
-
     }
     if(statuses[Permission.photos]!.isPermanentlyDenied){
       print("Permanently Denied photos");
       openSettings();
-
     }
     if(Platform.isAndroid){
       if(statuses[Permission.storage]!.isGranted){
