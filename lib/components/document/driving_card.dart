@@ -6,6 +6,7 @@ import 'package:peace_worc/model/doc_upload/doc_upload_response.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../api/api_links.dart';
+import '../../bloc/profile_registration/upload_doc_bloc.dart';
 class DrivingCard extends StatefulWidget {
   final List<Driving>? docs;
   const DrivingCard({super.key, required this.docs});
@@ -17,6 +18,37 @@ class DrivingCard extends StatefulWidget {
 class _DrivingCardState extends State<DrivingCard> {
   File? _image;
   final _picker = ImagePicker();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    addDocUploadListener();
+  }
+
+  void addDocUploadListener() {
+    uploadDocBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,13 +122,18 @@ class _DrivingCardState extends State<DrivingCard> {
 
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
-    await _picker.pickImage(source: ImageSource.gallery,);
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
       });
+      setState(() {
+        isLoading = true;
+      });
+      uploadDocBloc.uploadDoc(_image!, _image!.path.split('/').last, 'driving', "09-09-2065");
     }
   }
+
   void openSettings(){
     openAppSettings();
   }
@@ -143,5 +180,11 @@ class _DrivingCardState extends State<DrivingCard> {
         // openSettings();
       }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    uploadDocBloc.dispose();
   }
 }

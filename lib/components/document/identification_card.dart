@@ -6,6 +6,7 @@ import 'package:peace_worc/model/doc_upload/doc_upload_response.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../api/api_links.dart';
+import '../../bloc/profile_registration/upload_doc_bloc.dart';
 class IdentificationCard extends StatefulWidget {
   final List<Identification>? docs;
   const IdentificationCard({super.key, required this.docs});
@@ -17,6 +18,36 @@ class IdentificationCard extends StatefulWidget {
 class _IdentificationCardState extends State<IdentificationCard> {
   File? _image;
   final _picker = ImagePicker();
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    addDocUploadListener();
+  }
+  void addDocUploadListener() {
+    uploadDocBloc.subject.stream.listen((value) async {
+      setState(() {
+        isLoading = false;
+      });
+      if(value.error == null){
+        if (value.success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message.toString()),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.error.toString()),
+        ));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,11 +121,15 @@ class _IdentificationCardState extends State<IdentificationCard> {
 
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
-    await _picker.pickImage(source: ImageSource.gallery,);
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
       });
+      setState(() {
+        isLoading = true;
+      });
+      uploadDocBloc.uploadDoc(_image!, _image!.path.split('/').last, 'identification', "09-09-2065");
     }
   }
 
@@ -144,5 +179,11 @@ class _IdentificationCardState extends State<IdentificationCard> {
         // openSettings();
       }
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    uploadDocBloc.dispose();
   }
 }
